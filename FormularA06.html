@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Vortrittsmissachtung – Notizen für Dienstjournal</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    form { max-width: 700px; display: grid; gap: 1rem; }
+    label { font-weight: 600; display: block; margin-bottom: .25rem; }
+    input, textarea, button {
+      width: 100%; padding: .6rem; border: 1px solid #ccc; border-radius: .5rem;
+    }
+    textarea { min-height: 80px; }
+    button { background: #0b5cff; color: white; font-weight: 600; cursor: pointer; border: none; }
+    button:hover { background: #0949cc; }
+    .status { margin-top: .5rem; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Vortrittsmissachtung – Notizen für Dienstjournal</h1>
+
+  <form id="f">
+    <div>
+      <label for="nummer">Ausweisträger Nummer</label>
+      <input type="number" id="nummer" name="nummer" required />
+    </div>
+
+    <div>
+      <label for="name">Namen und Vornamen</label>
+      <input type="text" id="name" name="name" required />
+    </div>
+
+    <div>
+      <label for="rasant">Wann war das letzte Rasant?</label>
+      <input type="date" id="rasant" name="rasant" />
+    </div>
+
+    <div>
+      <label for="fahrberechtigung">Wann wurde die erste Fahrberechtigung ausgestellt?</label>
+      <input type="date" id="fahrberechtigung" name="fahrberechtigung" />
+    </div>
+
+    <div>
+      <label for="verstosse">Bisherige Verstösse</label>
+      <textarea id="verstosse" name="verstosse"></textarea>
+    </div>
+
+    <div>
+      <label for="aussage">Aussage Person</label>
+      <textarea id="aussage" name="aussage"></textarea>
+    </div>
+
+    <div>
+      <label for="bemerkungen">Bemerkungen</label>
+      <textarea id="bemerkungen" name="bemerkungen">-</textarea>
+    </div>
+
+    <button type="button" id="copy">Eingaben in Zwischenablage kopieren</button>
+    <div id="status" class="status"></div>
+  </form>
+
+  <script>
+    const form = document.getElementById('f');
+    const statusEl = document.getElementById('status');
+
+    // Datum formatieren in DD/MM/YYYY
+    function formatDate(value) {
+      if (!value) return "";
+      const d = new Date(value);
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const yyyy = d.getFullYear();
+      return `${dd}.${mm}.${yyyy}`;
+    }
+
+    function getValues() {
+      return {
+        "Ausweisträger Nummer": form.nummer.value,
+        "Namen und Vornamen": form.name.value,
+        "Wann war das letzte Rasant?": formatDate(form.rasant.value),
+        "Wann wurde die erste Fahrberechtigung ausgestellt?": formatDate(form.fahrberechtigung.value),
+        "Bisherige Verstösse": form.verstosse.value,
+        "Aussage Person": form.aussage.value,
+        "Bemerkungen": form.bemerkungen.value
+      };
+    }
+
+    function toText(values) {
+      return Object.entries(values)
+        .map(([k,v]) => `${k}: ${v || "-"}`)
+        .join("\n");
+    }
+
+    function copyToClipboard(txt) {
+      if (navigator.clipboard) {
+        return navigator.clipboard.writeText(txt);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = txt;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        return Promise.resolve();
+      }
+    }
+
+    document.getElementById('copy').addEventListener('click', () => {
+      const txt = toText(getValues());
+      copyToClipboard(txt).then(() => {
+        statusEl.textContent = "✅ Eingaben kopiert";
+        statusEl.style.color = "green";
+      }).catch(() => {
+        statusEl.textContent = "❌ Kopieren fehlgeschlagen";
+        statusEl.style.color = "red";
+      });
+    });
+  </script>
+</body>
+</html>
