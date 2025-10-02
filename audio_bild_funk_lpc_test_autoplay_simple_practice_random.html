@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audio–Bild & Funk – LPC‑Test (Deutsch Hörverstehen)</title>
+<style>
+  :root{--bg:#0b1220;--card:#111a2b;--ink:#e9eef7;--muted:#9bb0d4;--ok:#4bd37b;--bad:#ff5e7a;--acc:#5ea1ff;--bar:#1a2745;--barfill:#2b3c64}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;background:#0b1220;color:var(--ink)}
+  header{padding:16px 20px;background:#0c1526;border-bottom:1px solid #14223a;position:sticky;top:0;z-index:5}
+  h1{margin:0;font-size:18px}
+  main{max-width:1000px;margin:0 auto;padding:20px}
+  .card{background:#111a2b;border:1px solid #15233c;border-radius:14px;padding:16px;margin-bottom:20px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .muted{color:var(--muted);font-size:14px}
+  button{border:1px solid #2a3d63;background:#12203a;color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer;transition:.15s;font-weight:600}
+  button.primary{background:#1f3d6e;border-color:#2e4a80}
+  button:disabled{opacity:.6;cursor:not-allowed}
+  button:hover:not(:disabled){transform:translateY(-1px)}
+  .pill{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #2a3d63;background:#0e1830;font-size:12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .hidden{display:none}
+  .rules{display:grid;gap:10px;margin:10px 0 0}
+  .rules .item{display:flex;gap:10px;align-items:flex-start}
+  .rules .badge{min-width:28px;height:28px;border-radius:999px;background:#0e1830;border:1px solid #2a3d63;display:grid;place-items:center;font-weight:700}
+  .center{text-align:center}
+
+  /* Subtle timer */
+  .timer{position:relative;height:6px;background:var(--bar);border:1px solid #203153;border-radius:999px;overflow:hidden;margin:8px 0 4px;width:100%}
+  .timer .bar{height:100%;width:100%;background:var(--barfill);transition:width .2s linear}
+
+  .choices{display:grid;gap:14px;margin-top:14px}
+  @media(min-width:860px){.choices.grid3{grid-template-columns:repeat(3,1fr)}}
+  .opt{background:#0e1830;border:2px solid #24365a;border-radius:12px;padding:10px;cursor:pointer;transition:.15s;position:relative}
+  .opt:hover{transform:translateY(-2px);border-color:#38558e}
+  .opt.selected{border-color:var(--acc); box-shadow:0 0 0 3px rgba(94,161,255,.28), 0 6px 22px rgba(0,0,0,.3); transform:scale(1.01)}
+  .svg-wrap{width:100%;aspect-ratio:1/1;background:#0a1428;border:1px solid #1b2b4a;border-radius:10px;display:grid;place-items:center}
+  .label-center{text-align:center;margin-top:6px;color:var(--muted)}
+  .mcq{display:grid;gap:10px;margin-top:12px}
+  .mcq .choice{display:flex;gap:10px;align-items:flex-start;border:2px solid #1e3255;background:#0f1a30;padding:10px 12px;border-radius:10px;cursor:pointer}
+  .mcq .choice.selected{border-color:var(--acc); box-shadow:0 0 0 3px rgba(94,161,255,.28)}
+
+  .result-pass{border:1px solid #1e4f36;background:#0f2a22;color:#b9f6d2;padding:12px;border-radius:12px}
+  .result-fail{border:1px solid #4a1f2a;background:#2a0f15;color:#ffd0d6;padding:12px;border-radius:12px}
+  .list{margin-top:10px;border-top:1px dashed #2b3d62;padding-top:10px}
+  .list-item{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed #23365a}
+  .list-item:last-child{border-bottom:0}
+</style>
+</head>
+<body>
+<header><h1>Audio–Bild & Funk – LPC‑Test (Deutsch Hörverstehen)</h1></header>
+<main>
+  <!-- Start Page -->
+  <section class="card" id="startCard">
+    <h2>Willkommen zum LPC‑Test 👋</h2>
+    <p>Dieser Test prüft dein <b>deutsches Hörverständnis</b> mit kurzen Ansagen und Funksprüchen.</p>
+    <div class="rules">
+      <div class="item"><div class="badge">1</div><div>Es gibt <b>10 Fragen</b> in <b>zufälliger Reihenfolge</b>: Bild‑Aufgaben mit Ansage und Funk‑Aufgaben mit Textantwort.</div></div>
+      <div class="item"><div class="badge">2</div><div>Du hast pro Frage <b>30 Sekunden</b>. Die Zeitleiste zeigt die Zeit. Läuft sie ab, zählt die Frage als <b>falsch</b>.</div></div>
+      <div class="item"><div class="badge">3</div><div>Die Ansage startet <b>automatisch</b> und kann pro Frage noch <b>einmal</b> wiederholt werden (insgesamt 2×).</div></div>
+      <div class="item"><div class="badge">4</div><div>Du bestehst mit mindestens <b>90&nbsp;%</b> richtigen Antworten.</div></div>
+      <div class="item"><div class="badge">5</div><div>Während des Tests gibt es <b>keine Auflösung</b>. Alle richtigen Antworten siehst du am <b>Ende</b>.</div></div>
+    </div>
+    <div class="center" style="margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+      <button id="practiceBtn">🧪 Übungsrunde (2 Fragen)</button>
+      <button id="startBtn" class="primary">🚀 LPC‑Test starten</button>
+    </div>
+  </section>
+
+  <!-- Practice -->
+  <section class="card hidden" id="practiceCard">
+    <div class="row"><div class="pill">Übung</div><div class="pill">2 Fragen</div></div>
+    <p class="muted">Die Übungsrunde zählt nicht zur Wertung. Du siehst keine Auflösung während der Fragen.</p>
+    <div class="row" style="margin:10px 0">
+      <button id="p_play">🔁 Ansage wiederholen</button>
+      <button id="p_submit">Antwort abgeben</button>
+      <button id="p_next" disabled>Nächste ➜</button>
+    </div>
+    <div class="timer"><div class="bar" id="p_timeBar"></div></div>
+    <div class="row" style="gap:10px;margin-top:6px">
+      <div class="pill">Audio übrig: <b id="p_playsLeft">1</b></div>
+      <div class="pill">Zeit: <b id="p_timeLeft">30s</b></div>
+      <div class="pill">Frage <b id="p_idx">1</b>/<span id="p_total">2</span></div>
+    </div>
+
+    <div id="p_prompt" style="font-weight:600; margin-top:8px"></div>
+    <div id="p_imageChoices" class="choices grid3 hidden"></div>
+    <div id="p_mcqChoices" class="mcq hidden"></div>
+    <div id="p_feedback" style="margin-top:12px"></div>
+
+    <div class="center" style="margin-top:12px">
+      <button id="toTestBtn" class="primary hidden">Zum LPC‑Test</button>
+    </div>
+  </section>
+
+  <!-- Test -->
+  <section class="card hidden" id="quizCard">
+    <div class="row">
+      <div class="pill">Frage <b id="idx">1</b>/<span id="total">10</span></div>
+      <div class="pill">Richtig: <b id="score">0</b></div>
+      <div class="pill">Audio übrig: <b id="playsLeft">1</b></div>
+      <div class="pill">Zeit: <b id="timeLeft">30s</b></div>
+    </div>
+    <div class="timer"><div class="bar" id="timeBar"></div></div>
+    <p class="muted">Höre die <b>Ansage</b> oder den <b>Funkspruch</b> (max. 2× je Frage) und wähle die passende Antwort. Pro Frage hast du <b>30 Sekunden</b>.</p>
+    <div class="row" style="margin:10px 0">
+      <button id="play">🔁 Ansage wiederholen</button>
+      <button id="submit">Antwort abgeben</button>
+      <button id="next" disabled>Nächste Frage ➜</button>
+    </div>
+    <div id="prompt" style="font-weight:600"></div>
+
+    <div id="imageChoices" class="choices grid3 hidden"></div>
+    <div id="mcqChoices" class="mcq hidden" role="radiogroup" aria-label="Antwortmöglichkeiten"></div>
+
+    <div id="feedback" style="margin-top:12px"></div>
+  </section>
+
+  <!-- Summary -->
+  <section class="card hidden" id="summaryCard">
+    <h2>📊 Auswertung – LPC‑Test</h2>
+    <div id="summaryBox"></div>
+    <div class="list" id="detailList"></div>
+    <div class="row" style="margin-top:12px">
+      <button id="restart">Nochmal starten</button>
+    </div>
+  </section>
+</main>
+
+<script>
+// ---- Settings ----
+const PASS_THRESHOLD = 0.90;
+const MAX_PLAYS = 2;      // auto-play counts as the first play
+const TIME_LIMIT = 30;    // seconds
+
+// ---- Helpers ----
+function shuffle(a){ const arr=a.slice(); for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; }
+
+// SVG helpers
+function el(name, attrs={}, children=[]){
+  const e = document.createElementNS("http://www.w3.org/2000/svg", name);
+  for(const k in attrs){ e.setAttribute(k, attrs[k]); }
+  for(const c of children){ e.appendChild(c); }
+  return e;
+}
+function drawBase(w=220,h=220){ const svg=el("svg",{viewBox:`0 0 ${w} ${h}`,width:"92%",height:"92%"}); return svg; }
+function addRect(svg,x,y,w,h,fill,stroke=null,sw=3,rx=10){ svg.appendChild(el("rect",{x,y,width:w,height:h,fill,rx,ry:rx,stroke:stroke||"none","stroke-width":sw})); }
+function addCircle(svg,cx,cy,r,fill,stroke=null,sw=3){ svg.appendChild(el("circle",{cx,cy,r,fill,stroke:stroke||"none","stroke-width":sw})); }
+function addLine(svg,x1,y1,x2,y2,stroke,sw=8){ svg.appendChild(el("line",{x1,y1,x2,y2,stroke,"stroke-width":sw,"stroke-linecap":"round"})); }
+function addTriangle(svg,points,fill,stroke=null,sw=3){ svg.appendChild(el("polygon",{points,fill,stroke:stroke||"none","stroke-width":sw})); }
+function addText(svg,x,y,text,fill="#ffffff",size=20,weight="700"){ const t=el("text",{x,y,fill,"font-size":size,"font-weight":weight}); t.textContent=text; svg.appendChild(t); }
+const colors = { red:"#e74c3c", blue:"#3498db", green:"#2ecc71", yellow:"#f1c40f", violet:"#9b59b6", orange:"#e67e22", teal:"#1abc9c", white:"#ecf0f1" };
+
+// ---- Scenarios ----
+
+// Base 5 image scenarios (from earlier)
+const imageBase = [
+  { kind:"image", prompt:"Roter Kreis oben links, diagonale blaue Linie von unten links nach oben rechts.",
+    tts:"Wähle das Bild mit einem roten Kreis oben links und einer blauen diagonalen Linie von unten links nach oben rechts.",
+    buildOptions: function(){ const opts=[];
+      opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,60,60,32,colors.red); addLine(s,30,190,190,30,colors.blue,10); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,160,60,32,colors.red); addLine(s,30,190,190,30,colors.blue,10); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,60,60,32,colors.red); addLine(s,30,30,190,180,colors.blue,10); return s; }});
+      return shuffle(opts);
+    }},
+  { kind:"image", prompt:"Gelbes Rechteck in der Mitte, grünes Dreieck unten, violette senkrechte Linie rechts.",
+    tts:"Suche das Bild mit einem gelben Rechteck in der Mitte, einem grünen Dreieck unten und einer violetten senkrechten Linie rechts.",
+    buildOptions: function(){ const tri=(cx,cy,w,h)=>`${cx-w/2},${cy} ${cx+w/2},${cy} ${cx},${cy-h}`; const opts=[];
+      opts.push({correct:true, svg:()=>{ const s=drawBase(); addRect(s,60,70,100,70,colors.yellow); addTriangle(s,tri(110,190,90,70),colors.green); addLine(s,190,30,190,190,colors.violet,10); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addRect(s,60,70,100,70,colors.yellow); addTriangle(s,tri(110,190,90,70),colors.green); addLine(s,30,30,30,190,colors.violet,10); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addRect(s,60,70,100,70,colors.yellow); addTriangle(s,tri(110,80,90,70),colors.green); addLine(s,190,30,190,190,colors.violet,10); return s; }});
+      return shuffle(opts);
+    }},
+  { kind:"image", prompt:"Blauer Kreis unten rechts, orange waagrechte Linie oben, kleines grünes Quadrat unten links.",
+    tts:"Wähle das Bild mit einem blauen Kreis unten rechts, einer orangen waagrechten Linie oben und einem kleinen grünen Quadrat unten links.",
+    buildOptions: function(){ const opts=[];
+      opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,165,165,30,colors.blue); addLine(s,30,40,190,40,colors.orange,10); addRect(s,40,160,30,30,colors.green); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,165,55,30,colors.blue); addLine(s,30,40,190,40,colors.orange,10); addRect(s,40,160,30,30,colors.green); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,165,165,30,colors.blue); addLine(s,30,180,190,180,colors.orange,10); addRect(s,40,160,30,30,colors.green); return s; }});
+      return shuffle(opts);
+    }},
+  { kind:"image", prompt:"Violetter Kreis in der Mitte, gelbe Diagonale von oben rechts nach unten links, Buchstabe A links oben.",
+    tts:"Suche das Bild mit einem violetten Kreis in der Mitte, einer gelben Diagonale von oben rechts nach unten links und dem Buchstaben A links oben.",
+    buildOptions: function(){ const opts=[];
+      opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,180,30,30,180,colors.yellow,10); addText(s,20,30,"A",colors.white,26,"800"); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,30,30,180,180,colors.yellow,10); addText(s,20,30,"A",colors.white,26,"800"); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,180,30,30,180,colors.yellow,10); addText(s,20,30,"B",colors.white,26,"800"); return s; }});
+      return shuffle(opts);
+    }},
+  { kind:"image", prompt:"Zwei grüne senkrechte Linien links, rotes Dreieck oben, blaues Quadrat rechts unten.",
+    tts:"Wähle das Bild mit zwei grünen senkrechten Linien links, einem roten Dreieck oben und einem blauen Quadrat rechts unten.",
+    buildOptions: function(){ const tri=(cx,cy,w,h)=>`${cx-w/2},${cy} ${cx+w/2},${cy} ${cx},${cy-h}`; const opts=[];
+      opts.push({correct:true, svg:()=>{ const s=drawBase(); addLine(s,40,40,40,180,colors.green,10); addLine(s,70,40,70,180,colors.green,10); addTriangle(s,tri(110,80,80,60),colors.red); addRect(s,150,150,40,40,colors.blue); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addLine(s,150,40,150,180,colors.green,10); addLine(s,180,40,180,180,colors.green,10); addTriangle(s,tri(110,80,80,60),colors.red); addRect(s,150,150,40,40,colors.blue); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addLine(s,40,40,40,180,colors.green,10); addLine(s,70,40,70,180,colors.green,10); addTriangle(s,tri(110,80,80,60),colors.red); addRect(s,30,150,40,40,colors.blue); return s; }});
+      return shuffle(opts);
+    }}
+];
+
+// +2 harder image scenarios
+const imageHard = [
+  { kind:"image", prompt:"Zwei gelbe Quadrate: eines oben links, eines unten rechts. Dazwischen eine violette Diagonale von unten links nach oben rechts.",
+    tts:"Suche das Bild mit zwei gelben Quadraten, oben links und unten rechts. Dazwischen verläuft eine violette Diagonale von unten links nach oben rechts.",
+    buildOptions: function(){ const opts=[];
+      opts.push({correct:true, svg:()=>{ const s=drawBase(); addRect(s,40,40,36,36,colors.yellow); addRect(s,150,150,36,36,colors.yellow); addLine(s,30,190,190,30,colors.violet,10); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addRect(s,40,150,36,36,colors.yellow); addRect(s,150,40,36,36,colors.yellow); addLine(s,30,190,190,30,colors.violet,10); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addRect(s,40,40,36,36,colors.yellow); addRect(s,150,150,36,36,colors.yellow); addLine(s,30,30,190,190,colors.violet,10); return s; }});
+      return shuffle(opts);
+    }},
+  { kind:"image", prompt:"Grüner Kreis oben rechts, rotes Dreieck unten links, blaue waagrechte Linie in der Mitte.",
+    tts:"Wähle das Bild mit einem grünen Kreis oben rechts, einem roten Dreieck unten links und einer blauen waagrechten Linie in der Mitte.",
+    buildOptions: function(){ const tri=(cx,cy,w,h)=>`${cx-w/2},${cy} ${cx+w/2},${cy} ${cx},${cy-h}`; const opts=[];
+      opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,170,50,24,colors.green); addTriangle(s,tri(60,180,80,60),colors.red); addLine(s,30,110,190,110,colors.blue,10); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,50,50,24,colors.green); addTriangle(s,tri(60,180,80,60),colors.red); addLine(s,30,110,190,110,colors.blue,10); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,170,50,24,colors.green); addTriangle(s,tri(60,80,80,60),colors.red); addLine(s,30,110,190,110,colors.blue,10); return s; }});
+      return shuffle(opts);
+    }}
+];
+
+// 3 updated MCQ scenarios from user
+const mcqScenarios = [
+  { kind:"mcq", prompt:"Vor Rollweg November warten",
+    tts:"Orion eins, bitte vor Rollweg November warten. Bestätigen.",
+    options:[
+      {text:"Orion 1 bestätigt und wartet vor Rollweg November.", correct:true},
+      {text:"Orion 1 fährt über Rollweg November.", correct:false},
+      {text:"Orion 1 fährt zur Parkposition zurück.", correct:false}
+    ]},
+  { kind:"mcq", prompt:"Zu A10 fahren – Dockleitsystem ausgefallen",
+    tts:"Zebra Süd, bitte zu A zehn fahren. Das Dockleitsystem ist ausgefallen.",
+    options:[
+      {text:"Zebra Süd fährt zu A10. Dockleitsystem ist aus.", correct:true},
+      {text:"Zebra Süd fährt zu A19 und wartet.", correct:false},
+      {text:"Zebra Süd bleibt stehen und meldet Störung.", correct:false}
+    ]},
+  { kind:"mcq", prompt:"Zum Tower kommen",
+    tts:"Gusti zwei, kannst du bitte zum Tower kommen?",
+    options:[
+      {text:"Gusti 2 kommt zum Tower.", correct:true},
+      {text:"Gusti 2 bleibt am Standplatz.", correct:false},
+      {text:"Gusti 2 fährt zur Werkstatt.", correct:false}
+    ]}
+];
+
+// Build final test scenario list: 5 base images + 2 hard images + 3 mcq = 10
+const testScenariosAll = [...imageBase, ...imageHard, ...mcqScenarios];
+
+// Practice scenarios (2): 1 image + 1 mcq (simple)
+const practiceScenarios = [
+  { kind:"image", prompt:"Ein roter Kreis in der Mitte.",
+    tts:"Suche das Bild mit einem roten Kreis in der Mitte.",
+    buildOptions: function(){ const opts=[];
+      opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,110,110,32,colors.red); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,50,50,32,colors.red); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,170,170,32,colors.red); return s; }});
+      return shuffle(opts);
+    }},
+  { kind:"mcq", prompt:"Einfache Funkfrage",
+    tts:"Traktor A siebzehn, bitte warten.",
+    options:[
+      {text:"Traktor A17 wartet.", correct:true},
+      {text:"Traktor A17 fährt weiter.", correct:false},
+      {text:"Traktor A17 meldet Störung.", correct:false}
+    ]}
+];
+
+// ---- State ----
+let started=false,index=0,score=0,playsUsed=0,selected=-1,timer=null,timeLeft=TIME_LIMIT;
+let presented=null; // current presented options for question
+const answers=[];
+let testScenarios=[];
+
+// Practice state
+let p_index=0,p_selected=-1,p_timer=null,p_timeLeft=TIME_LIMIT,p_playsUsed=0,p_presented=null;
+
+// ---- DOM ----
+const startCard=document.getElementById('startCard');
+const practiceCard=document.getElementById('practiceCard');
+const quizCard=document.getElementById('quizCard');
+const summaryCard=document.getElementById('summaryCard');
+
+// Practice DOM
+const p_play=document.getElementById('p_play');
+const p_submit=document.getElementById('p_submit');
+const p_next=document.getElementById('p_next');
+const p_timeBar=document.getElementById('p_timeBar');
+const p_timeLeftEl=document.getElementById('p_timeLeft');
+const p_playsLeftEl=document.getElementById('p_playsLeft');
+const p_idxEl=document.getElementById('p_idx');
+const p_totalEl=document.getElementById('p_total');
+const p_prompt=document.getElementById('p_prompt');
+const p_imageChoices=document.getElementById('p_imageChoices');
+const p_mcqChoices=document.getElementById('p_mcqChoices');
+const p_feedback=document.getElementById('p_feedback');
+const toTestBtn=document.getElementById('toTestBtn');
+
+// Test DOM
+const idxEl=document.getElementById('idx');
+const scoreEl=document.getElementById('score');
+const playsLeftEl=document.getElementById('playsLeft');
+const timeLeftEl=document.getElementById('timeLeft');
+const timeBar=document.getElementById('timeBar');
+const playBtn=document.getElementById('play');
+const submitBtn=document.getElementById('submit');
+const nextBtn=document.getElementById('next');
+const promptEl=document.getElementById('prompt');
+const feedbackEl=document.getElementById('feedback');
+const imageChoices=document.getElementById('imageChoices');
+const mcqChoices=document.getElementById('mcqChoices');
+const detailList=document.getElementById('detailList');
+
+// Buttons
+document.getElementById('practiceBtn').addEventListener('click', startPractice);
+document.getElementById('startBtn').addEventListener('click', startTest);
+document.getElementById('restart').addEventListener('click', restartAll);
+
+// Speech
+function speak(text){
+  const u=new SpeechSynthesisUtterance(text);
+  const v=speechSynthesis.getVoices().find(v=>v.lang && v.lang.toLowerCase().startsWith('de'));
+  if(v) u.voice=v;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+// ---- Practice Logic ----
+function startPractice(){
+  startCard.classList.add('hidden');
+  practiceCard.classList.remove('hidden');
+  p_index=0; p_selected=-1; p_playsUsed=0; p_presented=null;
+  p_totalEl.textContent = practiceScenarios.length;
+  renderPractice();
+}
+
+function p_startTimer(){
+  if(p_timer){clearInterval(p_timer);}
+  p_timeLeft = TIME_LIMIT; p_timeLeftEl.textContent = `${p_timeLeft}s`; p_timeBar.style.width='100%';
+  p_timer=setInterval(()=>{
+    p_timeLeft--; p_timeLeftEl.textContent = `${p_timeLeft}s`; p_timeBar.style.width=`${(p_timeLeft/TIME_LIMIT)*100}%`;
+    if(p_timeLeft<=0){ clearInterval(p_timer); p_lockInputs(); p_next.disabled=false; }
+  },1000);
+}
+function p_lockInputs(){
+  p_play.disabled=true; p_submit.disabled=true;
+  Array.from(practiceCard.querySelectorAll('.opt, .mcq .choice')).forEach(el=>el.style.pointerEvents='none');
+}
+
+function renderPractice(){
+  const s=practiceScenarios[p_index];
+  p_idxEl.textContent = p_index+1;
+  p_feedback.innerHTML=""; p_selected=-1; p_next.disabled=true;
+  p_imageChoices.classList.add('hidden'); p_mcqChoices.classList.add('hidden');
+  p_imageChoices.innerHTML=""; p_mcqChoices.innerHTML="";
+  p_submit.disabled=false; p_play.disabled=false;
+  p_prompt.textContent = s.prompt;
+  if(s.kind==="image"){
+    const opts=s.buildOptions();
+    p_presented = opts.map((o,i)=>({text:`Bild ${i+1}`, correct:o.correct}));
+    p_imageChoices.classList.remove('hidden');
+    opts.forEach((opt,i)=>{
+      const card=document.createElement('div'); card.className='opt';
+      const wrap=document.createElement('div'); wrap.className='svg-wrap'; wrap.appendChild(opt.svg());
+      const label=document.createElement('div'); label.className='label-center'; label.textContent='Bild '+(i+1);
+      card.appendChild(wrap); card.appendChild(label);
+      card.addEventListener('click',()=>{
+        Array.from(p_imageChoices.children).forEach(el=>el.classList.remove('selected'));
+        card.classList.add('selected'); p_selected=i;
+      });
+      p_imageChoices.appendChild(card);
+    });
+  }else{
+    p_mcqChoices.classList.remove('hidden');
+    const shuffled = shuffle(s.options.map(o=>({text:o.text, correct:o.correct})));
+    p_presented = shuffled;
+    shuffled.forEach((opt,i)=>{
+      const label=document.createElement('label'); label.className='choice';
+      label.innerHTML=`<input type="radio" name="pmcq" value="${i}"> <div>${opt.text}</div>`;
+      label.addEventListener('click',()=>{
+        Array.from(p_mcqChoices.children).forEach(el=>el.classList.remove('selected'));
+        label.classList.add('selected'); p_selected=i;
+      });
+      p_mcqChoices.appendChild(label);
+    });
+  }
+  // Auto-play and timer
+  p_playsUsed=1; p_playsLeftEl.textContent = MAX_PLAYS - p_playsUsed; speak(s.tts);
+  p_startTimer();
+}
+
+p_play.addEventListener('click',()=>{
+  if(p_playsUsed>=MAX_PLAYS) return;
+  p_playsUsed++; p_playsLeftEl.textContent = Math.max(0, MAX_PLAYS - p_playsUsed);
+  if(p_playsUsed>=MAX_PLAYS) p_play.disabled=true;
+  speak(practiceScenarios[p_index].tts);
+});
+p_submit.addEventListener('click',()=>{
+  if(p_selected<0){ p_feedback.innerHTML=`<div class="result-fail">Bitte eine Option auswählen.</div>`; return; }
+  p_lockInputs(); p_next.disabled=false;
+});
+p_next.addEventListener('click',()=>{
+  if(p_index < practiceScenarios.length-1){ p_index++; renderPractice(); }
+  else{
+    p_feedback.innerHTML="";
+    toTestBtn.classList.remove('hidden');
+  }
+});
+toTestBtn.addEventListener('click', startTest);
+
+// ---- Test Logic ----
+function startTest(){
+  // Build and shuffle full 10-question test
+  testScenarios = shuffle(testScenariosAll.slice()); // random order
+  started=true; index=0; score=0; playsUsed=0; selected=-1; presented=null;
+  answers.length=0;
+  startCard.classList.add('hidden');
+  practiceCard.classList.add('hidden');
+  summaryCard.classList.add('hidden');
+  quizCard.classList.remove('hidden');
+  renderTest();
+}
+
+function startTimer(){
+  if(timer){clearInterval(timer);}
+  timeLeft = TIME_LIMIT; timeLeftEl.textContent = `${timeLeft}s`; timeBar.style.width='100%';
+  timer=setInterval(()=>{
+    timeLeft--; timeLeftEl.textContent=`${timeLeft}s`; timeBar.style.width=`${(timeLeft/TIME_LIMIT)*100}%`;
+    if(timeLeft<=0){ clearInterval(timer); autoFailDueToTimeout(); }
+  },1000);
+}
+function stopTimer(){ if(timer){clearInterval(timer); timer=null;} }
+function lockInputs(){
+  playBtn.disabled=true; submitBtn.disabled=true;
+  Array.from(document.querySelectorAll('.opt, .mcq .choice')).forEach(el=>el.style.pointerEvents='none');
+}
+
+function renderTest(){
+  const s=testScenarios[index];
+  idxEl.textContent=index+1;
+  scoreEl.textContent=score;
+  promptEl.textContent=s.prompt;
+  feedbackEl.innerHTML="";
+  selected=-1; nextBtn.disabled=true;
+  imageChoices.classList.add('hidden'); mcqChoices.classList.add('hidden');
+  imageChoices.innerHTML=""; mcqChoices.innerHTML="";
+  submitBtn.disabled=false; playBtn.disabled=false;
+  presented=null;
+
+  if(s.kind==="image"){
+    const opts=s.buildOptions();
+    presented = opts.map((o,i)=>({text:`Bild ${i+1}`, correct:o.correct}));
+    imageChoices.classList.remove('hidden');
+    opts.forEach((opt,i)=>{
+      const card=document.createElement('div'); card.className='opt';
+      const wrap=document.createElement('div'); wrap.className='svg-wrap'; wrap.appendChild(opt.svg());
+      const label=document.createElement('div'); label.className='label-center'; label.textContent='Bild '+(i+1);
+      card.appendChild(wrap); card.appendChild(label);
+      card.addEventListener('click',()=>{
+        Array.from(imageChoices.children).forEach(el=>el.classList.remove('selected'));
+        card.classList.add('selected'); selected=i;
+      });
+      imageChoices.appendChild(card);
+    });
+  }else{
+    mcqChoices.classList.remove('hidden');
+    const shuffled = shuffle(s.options.map(o=>({text:o.text, correct:o.correct})));
+    presented = shuffled;
+    shuffled.forEach((opt,i)=>{
+      const label=document.createElement('label'); label.className='choice';
+      label.innerHTML=`<input type="radio" name="mcq" value="${i}"> <div>${opt.text}</div>`;
+      label.addEventListener('click',()=>{
+        Array.from(mcqChoices.children).forEach(el=>el.classList.remove('selected'));
+        label.classList.add('selected'); selected=i;
+      });
+      mcqChoices.appendChild(label);
+    });
+  }
+
+  // Auto-play TTS and timer
+  playsUsed=1; playsLeftEl.textContent = MAX_PLAYS - playsUsed; speak(s.tts);
+  startTimer();
+}
+
+playBtn.addEventListener('click',()=>{
+  if(playsUsed >= MAX_PLAYS) return;
+  playsUsed++; playsLeftEl.textContent = Math.max(0, MAX_PLAYS - playsUsed);
+  if(playsUsed >= MAX_PLAYS) playBtn.disabled = true;
+  speak(testScenarios[index].tts);
+});
+
+submitBtn.addEventListener('click',()=>{
+  if(selected<0){ feedbackEl.innerHTML=`<div class="result-fail">Bitte eine Option auswählen.</div>`; return; }
+  const correctIndex = presented.findIndex(o=>o.correct===true);
+  const isCorrect = (selected===correctIndex);
+  if(!answers.some(a=>a.idx===index)){
+    if(isCorrect) score++;
+    answers.push({idx:index,isCorrect,selected,correctIndex,presented:presented.slice(),kind:testScenarios[index].kind,prompt:testScenarios[index].prompt});
+    scoreEl.textContent=score;
+  }
+  stopTimer(); lockInputs(); nextBtn.disabled=false; feedbackEl.innerHTML="";
+});
+
+function autoFailDueToTimeout(){
+  const correctIndex = presented.findIndex(o=>o.correct===true);
+  if(!answers.some(a=>a.idx===index)){
+    answers.push({idx:index,isCorrect:false,selected:-1,correctIndex,presented:presented.slice(),kind:testScenarios[index].kind,prompt:testScenarios[index].prompt});
+  }
+  lockInputs(); nextBtn.disabled=false; feedbackEl.innerHTML="";
+}
+
+nextBtn.addEventListener('click',()=>{
+  stopTimer();
+  if(index < testScenarios.length-1){ index++; renderTest(); }
+  else{ showSummary(); }
+});
+
+function showSummary(){
+  quizCard.classList.add('hidden'); summaryCard.classList.remove('hidden');
+  const total=testScenarios.length; const pct=Math.round((score/total)*100); const passed=(score/total)>=PASS_THRESHOLD;
+  const box=document.getElementById('summaryBox');
+  box.className = passed ? 'result-pass' : 'result-fail';
+  box.innerHTML = passed ? `Bestanden 🎉 – ${pct}% richtig (${score}/${total}).` : `Nicht bestanden – ${pct}% richtig (${score}/${total}). Mindestens ${Math.round(PASS_THRESHOLD*100)}% erforderlich.`;
+  detailList.innerHTML="";
+  answers.sort((a,b)=>a.idx-b.idx).forEach((a,i)=>{
+    const div=document.createElement('div'); div.className='list-item';
+    const tag=a.isCorrect?'✅':'❌'; const type=a.kind==="image"?"Bild":"Funk";
+    const yourText = (a.selected===-1) ? "— (keine Antwort)" : (a.presented[a.selected]?.text || "");
+    const correctText = a.presented[a.correctIndex]?.text || "";
+    div.innerHTML=`<div><b>${tag} Frage ${i+1} (${type})</b> – ${a.prompt}<br>
+    <span class="muted">Deine Auswahl: ${yourText}</span><br>
+    <span class="muted">Richtig: ${correctText}</span></div>`;
+    detailList.appendChild(div);
+  });
+}
+
+function restartAll(){
+  started=false; index=0; score=0; playsUsed=0; selected=-1; presented=null; answers.length=0;
+  // hide others, show start
+  practiceCard.classList.add('hidden');
+  quizCard.classList.add('hidden');
+  summaryCard.classList.add('hidden');
+  startCard.classList.remove('hidden');
+}
+</script>
+</body>
+</html>
