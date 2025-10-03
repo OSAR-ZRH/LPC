@@ -222,23 +222,23 @@ const mcqScenarios = [
   { kind:"mcq", prompt:"",
     tts:"Orion eins, bitte vor Rollweg November warten.",
     options:[
-      {text:"Orion 1 wartet vor Rollweg November.", correct:true},
-      {text:"Orion 1 wartet nach Rollweg November.", correct:false},
-      {text:"Orion 1 fährt zur Parkposition zurück.", correct:false}
+      {text:"Orion 1 muss vor Rollweg November warten.", correct:true},
+      {text:"Orion 1 muss nach Rollweg November warten.", correct:false},
+      {text:"Orion 1 muss vor dem Standplatz November warten.", correct:false}
     ]},
   { kind:"mcq", prompt:"",
     tts:"Zebra Süd, bitte zu Alfa zehn fahren. Das Dockleitsystem hat eine Störung.",
     options:[
-      {text:"Zebra Süd fährt zu A10. Dockleitsystem hat ein Problem.", correct:true},
-      {text:"Zebra Süd fährt zu A19 und wartet. Das Dockleitsystem läuft gut.", correct:false},
-      {text:"Zebra Süd bleibt stehen und meldet Störung.", correct:false}
+      {text:"Zebra Süd soll zu A10 fahren. Das Dockleitsystem hat ein Problem.", correct:true},
+      {text:"Zebra Süd soll zu A2 fahren. Das Dockleitsystem läuft gut.", correct:false},
+      {text:"Zebra Süd soll nicht zu A10 fahren.", correct:false}
     ]},
   { kind:"mcq", prompt:"",
     tts:"Gusti zwei, kannst du bitte zum Tower kommen?",
     options:[
       {text:"Gusti 2 soll zum Tower kommen.", correct:true},
-      {text:"Gusti 2 bleibt am Standplatz.", correct:false},
-      {text:"Gusti 2 fährt zur Werkstatt.", correct:false}
+      {text:"Gusti 2 soll später zum Tower kommen", correct:false},
+      {text:"Gusti 2 soll nicht zum Tower kommen", correct:false}
     ]}
 ];
 
