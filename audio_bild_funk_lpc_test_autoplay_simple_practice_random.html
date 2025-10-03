@@ -155,7 +155,7 @@ const colors = { red:"#e74c3c", blue:"#3498db", green:"#2ecc71", yellow:"#f1c40f
 
 // Base 5 image scenarios (from earlier)
 const imageBase = [
-  { kind:"image", prompt:"Roter Kreis oben links, diagonale blaue Linie von unten links nach oben rechts.",
+  { kind:"image", prompt:"",
     tts:"Wähle das Bild mit einem roten Kreis oben links und einer blauen diagonalen Linie von unten links nach oben rechts.",
     buildOptions: function(){ const opts=[];
       opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,60,60,32,colors.red); addLine(s,30,190,190,30,colors.blue,10); return s; }});
@@ -163,7 +163,7 @@ const imageBase = [
       opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,60,60,32,colors.red); addLine(s,30,30,190,180,colors.blue,10); return s; }});
       return shuffle(opts);
     }},
-  { kind:"image", prompt:"Gelbes Rechteck in der Mitte, grünes Dreieck unten, violette senkrechte Linie rechts.",
+  { kind:"image", prompt:"",
     tts:"Suche das Bild mit einem gelben Rechteck in der Mitte, einem grünen Dreieck unten und einer violetten senkrechten Linie rechts.",
     buildOptions: function(){ const tri=(cx,cy,w,h)=>`${cx-w/2},${cy} ${cx+w/2},${cy} ${cx},${cy-h}`; const opts=[];
       opts.push({correct:true, svg:()=>{ const s=drawBase(); addRect(s,60,70,100,70,colors.yellow); addTriangle(s,tri(110,190,90,70),colors.green); addLine(s,190,30,190,190,colors.violet,10); return s; }});
@@ -171,7 +171,7 @@ const imageBase = [
       opts.push({correct:false, svg:()=>{ const s=drawBase(); addRect(s,60,70,100,70,colors.yellow); addTriangle(s,tri(110,80,90,70),colors.green); addLine(s,190,30,190,190,colors.violet,10); return s; }});
       return shuffle(opts);
     }},
-  { kind:"image", prompt:"Blauer Kreis unten rechts, orange waagrechte Linie oben, kleines grünes Quadrat unten links.",
+  { kind:"image", prompt:"",
     tts:"Wähle das Bild mit einem blauen Kreis unten rechts, einer orangen waagrechten Linie oben und einem kleinen grünen Quadrat unten links.",
     buildOptions: function(){ const opts=[];
       opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,165,165,30,colors.blue); addLine(s,30,40,190,40,colors.orange,10); addRect(s,40,160,30,30,colors.green); return s; }});
@@ -179,7 +179,7 @@ const imageBase = [
       opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,165,165,30,colors.blue); addLine(s,30,180,190,180,colors.orange,10); addRect(s,40,160,30,30,colors.green); return s; }});
       return shuffle(opts);
     }},
-  { kind:"image", prompt:"Violetter Kreis in der Mitte, gelbe Diagonale von oben rechts nach unten links, Buchstabe A links oben.",
+  { kind:"image", prompt:"",
     tts:"Suche das Bild mit einem violetten Kreis in der Mitte, einer gelben Diagonale von oben rechts nach unten links und dem Buchstaben A links oben.",
     buildOptions: function(){ const opts=[];
       opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,180,30,30,180,colors.yellow,10); addText(s,20,30,"A",colors.white,26,"800"); return s; }});
@@ -187,7 +187,7 @@ const imageBase = [
       opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,180,30,30,180,colors.yellow,10); addText(s,20,30,"B",colors.white,26,"800"); return s; }});
       return shuffle(opts);
     }},
-  { kind:"image", prompt:"Zwei grüne senkrechte Linien links, rotes Dreieck oben, blaues Quadrat rechts unten.",
+  { kind:"image", prompt:"",
     tts:"Wähle das Bild mit zwei grünen senkrechten Linien links, einem roten Dreieck oben und einem blauen Quadrat rechts unten.",
     buildOptions: function(){ const tri=(cx,cy,w,h)=>`${cx-w/2},${cy} ${cx+w/2},${cy} ${cx},${cy-h}`; const opts=[];
       opts.push({correct:true, svg:()=>{ const s=drawBase(); addLine(s,40,40,40,180,colors.green,10); addLine(s,70,40,70,180,colors.green,10); addTriangle(s,tri(110,80,80,60),colors.red); addRect(s,150,150,40,40,colors.blue); return s; }});
@@ -199,7 +199,7 @@ const imageBase = [
 
 // +2 harder image scenarios
 const imageHard = [
-  { kind:"image", prompt:"Zwei gelbe Quadrate: eines oben links, eines unten rechts. Dazwischen eine violette Diagonale von unten links nach oben rechts.",
+  { kind:"image", prompt:"",
     tts:"Suche das Bild mit zwei gelben Quadraten, oben links und unten rechts. Dazwischen verläuft eine violette Diagonale von unten links nach oben rechts.",
     buildOptions: function(){ const opts=[];
       opts.push({correct:true, svg:()=>{ const s=drawBase(); addRect(s,40,40,36,36,colors.yellow); addRect(s,150,150,36,36,colors.yellow); addLine(s,30,190,190,30,colors.violet,10); return s; }});
@@ -207,7 +207,7 @@ const imageHard = [
       opts.push({correct:false, svg:()=>{ const s=drawBase(); addRect(s,40,40,36,36,colors.yellow); addRect(s,150,150,36,36,colors.yellow); addLine(s,30,30,190,190,colors.violet,10); return s; }});
       return shuffle(opts);
     }},
-  { kind:"image", prompt:"Grüner Kreis oben rechts, rotes Dreieck unten links, blaue waagrechte Linie in der Mitte.",
+  { kind:"image", prompt:"",
     tts:"Wähle das Bild mit einem grünen Kreis oben rechts, einem roten Dreieck unten links und einer blauen waagrechten Linie in der Mitte.",
     buildOptions: function(){ const tri=(cx,cy,w,h)=>`${cx-w/2},${cy} ${cx+w/2},${cy} ${cx},${cy-h}`; const opts=[];
       opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,170,50,24,colors.green); addTriangle(s,tri(60,180,80,60),colors.red); addLine(s,30,110,190,110,colors.blue,10); return s; }});
@@ -219,24 +219,24 @@ const imageHard = [
 
 // 3 updated MCQ scenarios from user
 const mcqScenarios = [
-  { kind:"mcq", prompt:"Vor Rollweg November warten",
-    tts:"Orion eins, bitte vor Rollweg November warten. Bestätigen.",
+  { kind:"mcq", prompt:"",
+    tts:"Orion eins, bitte vor Rollweg November warten.",
     options:[
-      {text:"Orion 1 bestätigt und wartet vor Rollweg November.", correct:true},
-      {text:"Orion 1 fährt über Rollweg November.", correct:false},
+      {text:"Orion 1 wartet vor Rollweg November.", correct:true},
+      {text:"Orion 1 wartet nach Rollweg November.", correct:false},
       {text:"Orion 1 fährt zur Parkposition zurück.", correct:false}
     ]},
-  { kind:"mcq", prompt:"Zu A10 fahren – Dockleitsystem ausgefallen",
+  { kind:"mcq", prompt:"",
     tts:"Zebra Süd, bitte zu A zehn fahren. Das Dockleitsystem ist ausgefallen.",
     options:[
-      {text:"Zebra Süd fährt zu A10. Dockleitsystem ist aus.", correct:true},
+      {text:"Zebra Süd fährt zu A10. Dockleitsystem ist ausgefallen.", correct:true},
       {text:"Zebra Süd fährt zu A19 und wartet.", correct:false},
       {text:"Zebra Süd bleibt stehen und meldet Störung.", correct:false}
     ]},
-  { kind:"mcq", prompt:"Zum Tower kommen",
+  { kind:"mcq", prompt:"",
     tts:"Gusti zwei, kannst du bitte zum Tower kommen?",
     options:[
-      {text:"Gusti 2 kommt zum Tower.", correct:true},
+      {text:"Gusti 2 soll zum Tower kommen.", correct:true},
       {text:"Gusti 2 bleibt am Standplatz.", correct:false},
       {text:"Gusti 2 fährt zur Werkstatt.", correct:false}
     ]}
@@ -255,8 +255,8 @@ const practiceScenarios = [
       opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,170,170,32,colors.red); return s; }});
       return shuffle(opts);
     }},
-  { kind:"mcq", prompt:"Einfache Funkfrage",
-    tts:"Traktor A siebzehn, bitte warten.",
+  { kind:"mcq", prompt:"",
+    tts:"Traktor Alpha siebzehn, bitte warten.",
     options:[
       {text:"Traktor A17 wartet.", correct:true},
       {text:"Traktor A17 fährt weiter.", correct:false},
