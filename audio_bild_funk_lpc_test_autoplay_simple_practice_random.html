@@ -227,10 +227,10 @@ const mcqScenarios = [
       {text:"Orion 1 fährt zur Parkposition zurück.", correct:false}
     ]},
   { kind:"mcq", prompt:"",
-    tts:"Zebra Süd, bitte zu A zehn fahren. Das Dockleitsystem ist ausgefallen.",
+    tts:"Zebra Süd, bitte zu Alfa zehn fahren. Das Dockleitsystem hat eine Störung.",
     options:[
-      {text:"Zebra Süd fährt zu A10. Dockleitsystem ist ausgefallen.", correct:true},
-      {text:"Zebra Süd fährt zu A19 und wartet.", correct:false},
+      {text:"Zebra Süd fährt zu A10. Dockleitsystem hat ein Problem.", correct:true},
+      {text:"Zebra Süd fährt zu A19 und wartet. Das Dockleitsystem läuft gut.", correct:false},
       {text:"Zebra Süd bleibt stehen und meldet Störung.", correct:false}
     ]},
   { kind:"mcq", prompt:"",
@@ -256,7 +256,7 @@ const practiceScenarios = [
       return shuffle(opts);
     }},
   { kind:"mcq", prompt:"",
-    tts:"Traktor Alpha siebzehn, bitte warten.",
+    tts:"Traktor Alfa siebzehn, bitte warten.",
     options:[
       {text:"Traktor A17 wartet.", correct:true},
       {text:"Traktor A17 fährt weiter.", correct:false},
