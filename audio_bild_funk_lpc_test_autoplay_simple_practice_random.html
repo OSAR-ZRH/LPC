@@ -222,59 +222,59 @@ const mcqScenarios = [
   { kind:"mcq", prompt:"",
     tts:"Orion eins, bitte vor Rollweg November warten.",
     options:[
-      {text:"Orion 1 muss vor Rollweg November warten.", correct:true},
+      {text:"Orion 1 muss vor dem Standplatz November warten.", correct:false},
       {text:"Orion 1 muss nach Rollweg November warten.", correct:false},
-      {text:"Orion 1 muss vor dem Standplatz November warten.", correct:false}
+      {text:"Orion 1 muss vor Rollweg November warten.", correct:true}
     ]},
   { kind:"mcq", prompt:"",
-    tts:"Zebra Süd, bitte zu Alfa zehn fahren. Das Dockleitsystem hat eine Störung.",
+    tts:"Zebra Süd, bitte zu Alfa zehn fahren. Wir haben eine Störung.",
     options:[
-      {text:"Zebra Süd soll zu A10 fahren. Das Dockleitsystem hat ein Problem.", correct:true},
-      {text:"Zebra Süd soll zu A2 fahren. Das Dockleitsystem läuft gut.", correct:false},
-      {text:"Zebra Süd soll nicht zu A10 fahren.", correct:false}
+      {text:"Zebra Süd soll zu A2 fahren. Dort gibt es ein Problem.", correct:false},
+      {text:"Zebra Süd soll nicht zu A10 fahren.", correct:false},
+      {text:"Zebra Süd soll zu A10 fahren. Dort gibt es ein Problem.", correct:true}
     ]},
   { kind:"mcq", prompt:"",
     tts:"Gusti zwei, kannst du bitte zum Tower kommen?",
     options:[
-      {text:"Gusti 2 soll zum Tower kommen.", correct:true},
+      {text:"Gusti 2 soll nicht zum Tower kommen.", correct:false},
       {text:"Gusti 2 soll später zum Tower kommen.", correct:false},
-      {text:"Gusti 2 soll nicht zum Tower kommen.", correct:false}
+      {text:"Gusti 2 soll zum Tower kommen.", correct:true}
     ]},
   // Neue MCQs (mittleres Deutschniveau, klare Sätze)
   { kind:"mcq", prompt:"",
     tts:"Traktor Alfa siebzehn, ich kann dich kaum verstehen.",
     options:[
-      {text:"Traktor A17 ist schlecht zu verstehen.", correct:true},
       {text:"Traktor A17 hat falsch gestossen.", correct:false},
+      {text:"Traktor A17 ist schlecht zu verstehen.", correct:true},
       {text:"Traktor A17 versteht man sehr gut.", correct:false}
     ]},
   { kind:"mcq", prompt:"",
     tts:"Traktor Bravo dreiunddreissig. Stossen, Foxtrott Nase Nord.",
     options:[
-      {text:"Traktor B33 muss Foxtrot, Nase Nord stossen.", correct:true},
       {text:"Traktor B33 muss Echo, Nase Nord stossen.", correct:false},
-      {text:"Traktor B33 muss Foxtrot, Nase Süd stossen.", correct:false}
+      {text:"Traktor B33 muss Foxtrott, Nase Nord stossen.", correct:true},
+      {text:"Traktor B33 muss Foxtrott, Nase Süd stossen.", correct:false}
     ]},
   { kind:"mcq", prompt:"",
     tts:"Gusti zwei, kannst du uns bitte kurz anrufen?",
     options:[
-      {text:"Gusti 2 soll kurz anrufen.", correct:true},
       {text:"Gusti 2 soll sich via Funk melden.", correct:false},
-      {text:"Gusti 1 soll sich kurz melden.", correct:false}
+      {text:"Gusti 1 soll sich kurz melden.", correct:false},
+      {text:"Gusti 2 soll kurz anrufen.", correct:true}
     ]},
   { kind:"mcq", prompt:"",
     tts:"Gusti 2, die Funkverbindung ist schlecht. Wiederhole die letzte Meldung nochmals.",
     options:[
+      {text:"Gusti 2 soll das Funken einstellen.", correct:false},
       {text:"Gusti 2 soll die letzte Meldung wiederholen.", correct:true},
-      {text:"Gusti 2 soll die letzte Meldung wiederholen.", correct:false},
-      {text:"Gusti 2 soll die das Funken einstellen.", correct:false}
+      {text:"Gusti 2 soll eine neue Meldung machen.", correct:false}
     ]},
   { kind:"mcq", prompt:"",
     tts:"An alle von der Airport Authority, es ist LVP-Aktiv.",
     options:[
-      {text:"Die Airport Authority informiert alle, dass LVP-Aktiv ist.", correct:true},
       {text:"Die Airport Authority informiert alle, dass LVP-Aktiv aufgehoben ist.", correct:false},
-      {text:"Die Airport Authority informiert einzelne, dass LVP-Aktiv ist.", correct:false}
+      {text:"Die Airport Authority informiert einzelne, dass LVP-Aktiv ist.", correct:false},
+      {text:"Die Airport Authority informiert alle, dass LVP-Aktiv ist.", correct:true}
     ]}
 ];
 
