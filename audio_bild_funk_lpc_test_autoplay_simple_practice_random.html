@@ -97,7 +97,7 @@
   <section class="card hidden" id="quizCard">
     <div class="row">
       <div class="pill">Frage <b id="idx">1</b>/<span id="total">15</span></div>
-      <div class="pill">Richtig: <b id="score">0</b></div>
+      <div class="pill hidden">Richtig: <b id="score">0</b></div>
       <div class="pill">Audio übrig: <b id="playsLeft">1</b></div>
       <div class="pill">Zeit: <b id="timeLeft">30s</b></div>
     </div>
@@ -182,9 +182,9 @@ const imageBase = [
   { kind:"image", prompt:"",
     tts:"Suche das Bild mit einem violetten Kreis in der Mitte, einer gelben Diagonale von oben rechts nach unten links und dem Buchstaben A links oben.",
     buildOptions: function(){ const opts=[];
-      opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,180,30,30,180,colors.yellow,10); addText(s,20,30,"A",colors.white,26,"800"); return s; }});
-      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,30,30,180,180,colors.yellow,10); addText(s,20,30,"A",colors.white,26,"800"); return s; }});
-      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,180,30,30,180,colors.yellow,10); addText(s,20,30,"B",colors.white,26,"800"); return s; }});
+      opts.push({correct:true, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,180,30,30,180,colors.yellow,10); addText(s,20,30,"A","#1f2937",26,"800"); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,30,30,180,180,colors.yellow,10); addText(s,20,30,"A","#1f2937",26,"800"); return s; }});
+      opts.push({correct:false, svg:()=>{ const s=drawBase(); addCircle(s,110,110,34,colors.violet); addLine(s,180,30,30,180,colors.yellow,10); addText(s,20,30,"B","#1f2937",26,"800"); return s; }});
       return shuffle(opts);
     }},
   { kind:"image", prompt:"",
@@ -294,9 +294,9 @@ const practiceScenarios = [
   { kind:"mcq", prompt:"",
     tts:"Traktor Alfa siebzehn, bitte warten.",
     options:[
-      {text:"Traktor A17 muss wartet.", correct:true},
-      {text:"Traktor A17 soll stossen.", correct:false},
-      {text:"Traktor A17 meldet eine Störung.", correct:false}
+      {text:"Traktor A17 wartet.", correct:true},
+      {text:"Traktor A17 fährt weiter.", correct:false},
+      {text:"Traktor A17 meldet Störung.", correct:false}
     ]}
 ];
 
