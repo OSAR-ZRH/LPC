@@ -55,7 +55,7 @@
     <h2>Willkommen zum LPC‑Test 👋</h2>
     <p>Dieser Test prüft dein <b>deutsches Hörverständnis</b> mit kurzen Ansagen und Funksprüchen.</p>
     <div class="rules">
-      <div class="item"><div class="badge">1</div><div>Es gibt <b>10 Fragen</b> in <b>zufälliger Reihenfolge</b>: Bild‑Aufgaben mit Ansage und Funk‑Aufgaben mit Textantwort.</div></div>
+      <div class="item"><div class="badge">1</div><div>Es gibt <b>15 Fragen</b> in <b>zufälliger Reihenfolge</b>: Bild‑Aufgaben mit Ansage und Funk‑Aufgaben mit Textantwort.</div></div>
       <div class="item"><div class="badge">2</div><div>Du hast pro Frage <b>30 Sekunden</b>. Die Zeitleiste zeigt die Zeit. Läuft sie ab, zählt die Frage als <b>falsch</b>.</div></div>
       <div class="item"><div class="badge">3</div><div>Die Ansage startet <b>automatisch</b> und kann pro Frage noch <b>einmal</b> wiederholt werden (insgesamt 2×).</div></div>
       <div class="item"><div class="badge">4</div><div>Du bestehst mit mindestens <b>90&nbsp;%</b> richtigen Antworten.</div></div>
@@ -96,7 +96,7 @@
   <!-- Test -->
   <section class="card hidden" id="quizCard">
     <div class="row">
-      <div class="pill">Frage <b id="idx">1</b>/<span id="total">10</span></div>
+      <div class="pill">Frage <b id="idx">1</b>/<span id="total">15</span></div>
       <div class="pill">Richtig: <b id="score">0</b></div>
       <div class="pill">Audio übrig: <b id="playsLeft">1</b></div>
       <div class="pill">Zeit: <b id="timeLeft">30s</b></div>
@@ -217,7 +217,7 @@ const imageHard = [
     }}
 ];
 
-// 3 updated MCQ scenarios from user
+// 3 updated MCQ scenarios from user + 5 neue MCQs
 const mcqScenarios = [
   { kind:"mcq", prompt:"",
     tts:"Orion eins, bitte vor Rollweg November warten.",
@@ -237,12 +237,48 @@ const mcqScenarios = [
     tts:"Gusti zwei, kannst du bitte zum Tower kommen?",
     options:[
       {text:"Gusti 2 soll zum Tower kommen.", correct:true},
-      {text:"Gusti 2 soll später zum Tower kommen", correct:false},
-      {text:"Gusti 2 soll nicht zum Tower kommen", correct:false}
+      {text:"Gusti 2 soll später zum Tower kommen.", correct:false},
+      {text:"Gusti 2 soll nicht zum Tower kommen.", correct:false}
+    ]},
+  // Neue MCQs (mittleres Deutschniveau, klare Sätze)
+  { kind:"mcq", prompt:"",
+    tts:"Traktor Alfa siebzehn, ich kann dich kaum verstehen.",
+    options:[
+      {text:"Traktor A17 ist schlecht zu verstehen.", correct:true},
+      {text:"Traktor A17 hat falsch gestossen.", correct:false},
+      {text:"Traktor A17 versteht man sehr gut.", correct:false}
+    ]},
+  { kind:"mcq", prompt:"",
+    tts:"Traktor Bravo dreiunddreissig. Foxtrott Nase Nord.",
+    options:[
+      {text:"Traktor Bravo dreiunddreissig muss Foxtrot, Nase Nord stossen.", correct:true},
+      {text:"Traktor Bravo dreiunddreissig muss Echo, Nase Nord stossen.", correct:false},
+      {text:"Traktor Bravo dreiunddreissig muss Foxtrot, Nase Süd stossen.", correct:false}
+    ]},
+  { kind:"mcq", prompt:"",
+    tts:"Gusti zwei, kannst du uns bitte kurz anrufen?",
+    options:[
+      {text:"Gusti 2 soll kurz anrufen.", correct:true},
+      {text:"Gusti 2 soll sich via Funk melden.", correct:false},
+      {text:"Gusti 1 soll sich kurz melden.", correct:false}
+    ]},
+  { kind:"mcq", prompt:"",
+    tts:"Traktor Bravo einunddreissig, die Funkverbindung ist schlecht. Wiederhole die letzte Meldung nochmals.",
+    options:[
+      {text:"Traktor B33 soll die letzte Meldung wiederholen.", correct:true},
+      {text:"Traktor A13 soll die letzte Meldung wiederholen.", correct:false},
+      {text:"Traktor B33 soll die das Funken einstellen.", correct:false}
+    ]},
+  { kind:"mcq", prompt:"",
+    tts:"An alle von der Airport Authority, es ist LVP-Aktiv.",
+    options:[
+      {text:"Die Airport Authority informiert alle, dass LVP-Aktiv ist.", correct:true},
+      {text:"Die Airport Authority informiert alle, dass LVP-Aktiv aufgehoben ist.", correct:false},
+      {text:"Die Airport Authority informiert einzelne, dass LVP-Aktiv ist.", correct:false}
     ]}
 ];
 
-// Build final test scenario list: 5 base images + 2 hard images + 3 mcq = 10
+// Build final test scenario list: 5 base images + 2 hard images + 8 mcq = 15
 const testScenariosAll = [...imageBase, ...imageHard, ...mcqScenarios];
 
 // Practice scenarios (2): 1 image + 1 mcq (simple)
@@ -308,6 +344,7 @@ const feedbackEl=document.getElementById('feedback');
 const imageChoices=document.getElementById('imageChoices');
 const mcqChoices=document.getElementById('mcqChoices');
 const detailList=document.getElementById('detailList');
+const totalEl=document.getElementById('total');
 
 // Buttons
 document.getElementById('practiceBtn').addEventListener('click', startPractice);
@@ -333,7 +370,7 @@ function startPractice(){
 }
 
 function p_startTimer(){
-  if(p_timer){clearInterval(p_timer);}
+  if(p_timer){clearInterval(p_timer);}  
   p_timeLeft = TIME_LIMIT; p_timeLeftEl.textContent = `${p_timeLeft}s`; p_timeBar.style.width='100%';
   p_timer=setInterval(()=>{
     p_timeLeft--; p_timeLeftEl.textContent = `${p_timeLeft}s`; p_timeBar.style.width=`${(p_timeLeft/TIME_LIMIT)*100}%`;
@@ -408,7 +445,7 @@ toTestBtn.addEventListener('click', startTest);
 
 // ---- Test Logic ----
 function startTest(){
-  // Build and shuffle full 10-question test
+  // Build and shuffle full 15-question test
   testScenarios = shuffle(testScenariosAll.slice()); // random order
   started=true; index=0; score=0; playsUsed=0; selected=-1; presented=null;
   answers.length=0;
@@ -416,11 +453,12 @@ function startTest(){
   practiceCard.classList.add('hidden');
   summaryCard.classList.add('hidden');
   quizCard.classList.remove('hidden');
+  totalEl.textContent = testScenarios.length;
   renderTest();
 }
 
 function startTimer(){
-  if(timer){clearInterval(timer);}
+  if(timer){clearInterval(timer);}  
   timeLeft = TIME_LIMIT; timeLeftEl.textContent = `${timeLeft}s`; timeBar.style.width='100%';
   timer=setInterval(()=>{
     timeLeft--; timeLeftEl.textContent=`${timeLeft}s`; timeBar.style.width=`${(timeLeft/TIME_LIMIT)*100}%`;
