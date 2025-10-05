@@ -5,45 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Audio–Bild & Funk – LPC‑Test (Deutsch Hörverstehen)</title>
 <style>
-  :root{--bg:#0b1220;--card:#111a2b;--ink:#e9eef7;--muted:#9bb0d4;--ok:#4bd37b;--bad:#ff5e7a;--acc:#5ea1ff;--bar:#1a2745;--barfill:#2b3c64}
+  :root{--bg:#f7f9fc;--card:#ffffff;--ink:#0f172a;--muted:#5b6b8c;--ok:#16a34a;--bad:#ef4444;--acc:#2563eb;--bar:#e8eef9;--barfill:#c7d7f7}
   *{box-sizing:border-box}
-  body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;background:#0b1220;color:var(--ink)}
-  header{padding:16px 20px;background:#0c1526;border-bottom:1px solid #14223a;position:sticky;top:0;z-index:5}
+  body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;background:var(--bg);color:var(--ink)}
+  header{padding:16px 20px;background:#ffffff;border-bottom:1px solid #e6eef8;position:sticky;top:0;z-index:5;box-shadow:0 2px 10px rgba(15,23,42,.05)}
   h1{margin:0;font-size:18px}
   main{max-width:1000px;margin:0 auto;padding:20px}
-  .card{background:#111a2b;border:1px solid #15233c;border-radius:14px;padding:16px;margin-bottom:20px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+  .card{background:var(--card);border:1px solid #e6eef8;border-radius:14px;padding:16px;margin-bottom:20px;box-shadow:0 6px 18px rgba(15,23,42,.06)}
   .muted{color:var(--muted);font-size:14px}
-  button{border:1px solid #2a3d63;background:#12203a;color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer;transition:.15s;font-weight:600}
-  button.primary{background:#1f3d6e;border-color:#2e4a80}
+  button{border:1px solid #c7d7f7;background:#ecf3ff;color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer;transition:.15s;font-weight:600}
+  button.primary{background:var(--acc);border-color:#1e4ed8;color:#fff}
   button:disabled{opacity:.6;cursor:not-allowed}
   button:hover:not(:disabled){transform:translateY(-1px)}
-  .pill{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #2a3d63;background:#0e1830;font-size:12px}
+  .pill{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #d6e4ff;background:#f1f5ff;font-size:12px}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
   .hidden{display:none}
   .rules{display:grid;gap:10px;margin:10px 0 0}
   .rules .item{display:flex;gap:10px;align-items:flex-start}
-  .rules .badge{min-width:28px;height:28px;border-radius:999px;background:#0e1830;border:1px solid #2a3d63;display:grid;place-items:center;font-weight:700}
+  .rules .badge{min-width:18px;width:18px;height:18px;border-radius:999px;background:#eaf2ff;border:1px solid #d6e4ff;display:grid;place-items:center;font-weight:700;color:#1f3b72;font-size:11px}
   .center{text-align:center}
 
   /* Subtle timer */
-  .timer{position:relative;height:6px;background:var(--bar);border:1px solid #203153;border-radius:999px;overflow:hidden;margin:8px 0 4px;width:100%}
+  .timer{position:relative;height:6px;background:var(--bar);border:1px solid #c7d7f7;border-radius:999px;overflow:hidden;margin:8px 0 4px;width:100%}
   .timer .bar{height:100%;width:100%;background:var(--barfill);transition:width .2s linear}
 
   .choices{display:grid;gap:14px;margin-top:14px}
   @media(min-width:860px){.choices.grid3{grid-template-columns:repeat(3,1fr)}}
-  .opt{background:#0e1830;border:2px solid #24365a;border-radius:12px;padding:10px;cursor:pointer;transition:.15s;position:relative}
-  .opt:hover{transform:translateY(-2px);border-color:#38558e}
-  .opt.selected{border-color:var(--acc); box-shadow:0 0 0 3px rgba(94,161,255,.28), 0 6px 22px rgba(0,0,0,.3); transform:scale(1.01)}
-  .svg-wrap{width:100%;aspect-ratio:1/1;background:#0a1428;border:1px solid #1b2b4a;border-radius:10px;display:grid;place-items:center}
+  .opt{background:#f8fbff;border:2px solid #dbe7ff;border-radius:12px;padding:10px;cursor:pointer;transition:.15s;position:relative}
+  .opt:hover{transform:translateY(-2px);border-color:#a5c0ff}
+  .opt.selected{border-color:var(--acc); box-shadow:0 0 0 3px rgba(37,99,235,.20), 0 6px 22px rgba(15,23,42,.08); transform:scale(1.01)}
+  .svg-wrap{width:100%;aspect-ratio:1/1;background:#f4f8ff;border:1px solid #e3edff;border-radius:10px;display:grid;place-items:center}
   .label-center{text-align:center;margin-top:6px;color:var(--muted)}
   .mcq{display:grid;gap:10px;margin-top:12px}
-  .mcq .choice{display:flex;gap:10px;align-items:flex-start;border:2px solid #1e3255;background:#0f1a30;padding:10px 12px;border-radius:10px;cursor:pointer}
+  .mcq .choice{display:flex;gap:10px;align-items:flex-start;border:2px solid #dbe7ff;background:#f8fbff;padding:10px 12px;border-radius:10px;cursor:pointer}
   .mcq .choice.selected{border-color:var(--acc); box-shadow:0 0 0 3px rgba(94,161,255,.28)}
 
-  .result-pass{border:1px solid #1e4f36;background:#0f2a22;color:#b9f6d2;padding:12px;border-radius:12px}
-  .result-fail{border:1px solid #4a1f2a;background:#2a0f15;color:#ffd0d6;padding:12px;border-radius:12px}
-  .list{margin-top:10px;border-top:1px dashed #2b3d62;padding-top:10px}
-  .list-item{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed #23365a}
+  .result-pass{border:1px solid #b7ead3;background:#ecfdf5;color:#065f46;padding:12px;border-radius:12px}
+  .result-fail{border:1px solid #fecaca;background:#fef2f2;color:#7f1d1d;padding:12px;border-radius:12px}
+  .list{margin-top:10px;border-top:1px dashed #e6eef8;padding-top:10px}
+  .list-item{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed #e6eef8}
   .list-item:last-child{border-bottom:0}
 </style>
 </head>
@@ -148,7 +148,7 @@ function addRect(svg,x,y,w,h,fill,stroke=null,sw=3,rx=10){ svg.appendChild(el("r
 function addCircle(svg,cx,cy,r,fill,stroke=null,sw=3){ svg.appendChild(el("circle",{cx,cy,r,fill,stroke:stroke||"none","stroke-width":sw})); }
 function addLine(svg,x1,y1,x2,y2,stroke,sw=8){ svg.appendChild(el("line",{x1,y1,x2,y2,stroke,"stroke-width":sw,"stroke-linecap":"round"})); }
 function addTriangle(svg,points,fill,stroke=null,sw=3){ svg.appendChild(el("polygon",{points,fill,stroke:stroke||"none","stroke-width":sw})); }
-function addText(svg,x,y,text,fill="#ffffff",size=20,weight="700"){ const t=el("text",{x,y,fill,"font-size":size,"font-weight":weight}); t.textContent=text; svg.appendChild(t); }
+function addText(svg,x,y,text,fill="#1f2937",size=20,weight="700"){ const t=el("text",{x,y,fill,"font-size":size,"font-weight":weight}); t.textContent=text; svg.appendChild(t); }
 const colors = { red:"#e74c3c", blue:"#3498db", green:"#2ecc71", yellow:"#f1c40f", violet:"#9b59b6", orange:"#e67e22", teal:"#1abc9c", white:"#ecf0f1" };
 
 // ---- Scenarios ----
@@ -294,9 +294,9 @@ const practiceScenarios = [
   { kind:"mcq", prompt:"",
     tts:"Traktor Alfa siebzehn, bitte warten.",
     options:[
-      {text:"Traktor A17 wartet.", correct:true},
-      {text:"Traktor A17 fährt weiter.", correct:false},
-      {text:"Traktor A17 meldet Störung.", correct:false}
+      {text:"Traktor A17 muss wartet.", correct:true},
+      {text:"Traktor A17 soll stossen.", correct:false},
+      {text:"Traktor A17 meldet eine Störung.", correct:false}
     ]}
 ];
 
