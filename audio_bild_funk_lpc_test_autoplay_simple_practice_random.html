@@ -1,11 +1,15 @@
+
 <!doctype html>
 <html lang="de">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Audio–Bild & Funk – LPC‑Test (Deutsch Hörverstehen)</title>
+<title>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)</title>
 <style>
-  :root{--bg:#f7f9fc;--card:#ffffff;--ink:#0f172a;--muted:#5b6b8c;--ok:#16a34a;--bad:#ef4444;--acc:#2563eb;--bar:#e8eef9;--barfill:#c7d7f7}
+  :root{
+    --bg:#f7f9fc;--card:#ffffff;--ink:#0f172a;--muted:#5b6b8c;--ok:#16a34a;--bad:#ef4444;
+    --acc:#2563eb;--bar:#e8eef9;--barfill:#c7d7f7;--warn:#f59e0b; /* Orange for 10s warning */
+  }
   *{box-sizing:border-box}
   body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,sans-serif;background:var(--bg);color:var(--ink)}
   header{padding:16px 20px;background:#ffffff;border-bottom:1px solid #e6eef8;position:sticky;top:0;z-index:5;box-shadow:0 2px 10px rgba(15,23,42,.05)}
@@ -28,6 +32,9 @@
   /* Subtle timer */
   .timer{position:relative;height:6px;background:var(--bar);border:1px solid #c7d7f7;border-radius:999px;overflow:hidden;margin:8px 0 4px;width:100%}
   .timer .bar{height:100%;width:100%;background:var(--barfill);transition:width .2s linear}
+  /* Warning state from 10s remaining */
+  .timer .bar.warn{ background:var(--warn); }
+  .pill.warn{ color:var(--warn); border-color:#ffd59b; background:#fff7ec; }
 
   .choices{display:grid;gap:14px;margin-top:14px}
   @media(min-width:860px){.choices.grid3{grid-template-columns:repeat(3,1fr)}}
@@ -48,14 +55,14 @@
 </style>
 </head>
 <body>
-<header><h1>Audio–Bild & Funk – LPC‑Test (Deutsch Hörverstehen)</h1></header>
+<header><h1>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)</h1></header>
 <main>
   <!-- Start Page -->
   <section class="card" id="startCard">
-    <h2>Willkommen zum LPC‑Test 👋</h2>
+    <h2>Willkommen zum LPC-Test 👋</h2>
     <p>Dieser Test prüft dein <b>deutsches Hörverständnis</b> mit kurzen Ansagen und Funksprüchen.</p>
     <div class="rules">
-      <div class="item"><div class="badge">1</div><div>Es gibt <b>15 Fragen</b> in <b>zufälliger Reihenfolge</b>: Bild‑Aufgaben mit Ansage und Funk‑Aufgaben mit Textantwort.</div></div>
+      <div class="item"><div class="badge">1</div><div>Es gibt <b>15 Fragen</b> in <b>zufälliger Reihenfolge</b>: Bild-Aufgaben mit Ansage und Funk-Aufgaben mit Textantwort.</div></div>
       <div class="item"><div class="badge">2</div><div>Du hast pro Frage <b>30 Sekunden</b>. Die Zeitleiste zeigt die Zeit. Läuft sie ab, zählt die Frage als <b>falsch</b>.</div></div>
       <div class="item"><div class="badge">3</div><div>Die Ansage startet <b>automatisch</b> und kann pro Frage noch <b>einmal</b> wiederholt werden (insgesamt 2×).</div></div>
       <div class="item"><div class="badge">4</div><div>Du bestehst mit mindestens <b>90&nbsp;% bzw. 14 richtigen Antworten</b>.</div></div>
@@ -63,7 +70,7 @@
     </div>
     <div class="center" style="margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
       <button id="practiceBtn">🧪 Übungsrunde (2 Fragen)</button>
-      <button id="startBtn" class="primary">🚀 LPC‑Test starten</button>
+      <button id="startBtn" class="primary">🚀 LPC-Test starten</button>
     </div>
   </section>
 
@@ -89,7 +96,7 @@
     <div id="p_feedback" style="margin-top:12px"></div>
 
     <div class="center" style="margin-top:12px">
-      <button id="toTestBtn" class="primary hidden">Zum LPC‑Test</button>
+      <button id="toTestBtn" class="primary hidden">Zum LPC-Test</button>
     </div>
   </section>
 
@@ -118,7 +125,7 @@
 
   <!-- Summary -->
   <section class="card hidden" id="summaryCard">
-    <h2>📊 Auswertung – LPC‑Test</h2>
+    <h2>📊 Auswertung – LPC-Test</h2>
     <div id="summaryBox"></div>
     <div class="list" id="detailList"></div>
     <div class="row" style="margin-top:12px">
@@ -150,6 +157,34 @@ function addLine(svg,x1,y1,x2,y2,stroke,sw=8){ svg.appendChild(el("line",{x1,y1,
 function addTriangle(svg,points,fill,stroke=null,sw=3){ svg.appendChild(el("polygon",{points,fill,stroke:stroke||"none","stroke-width":sw})); }
 function addText(svg,x,y,text,fill="#1f2937",size=20,weight="700"){ const t=el("text",{x,y,fill,"font-size":size,"font-weight":weight}); t.textContent=text; svg.appendChild(t); }
 const colors = { red:"#e74c3c", blue:"#3498db", green:"#2ecc71", yellow:"#f1c40f", violet:"#9b59b6", orange:"#e67e22", teal:"#1abc9c", white:"#ecf0f1" };
+
+// ---- Robust Speech ----
+function speak(text){
+  // Never block timers/questions if TTS is unavailable
+  if (!('speechSynthesis' in window)) return;
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    const pickAndSpeak = () => {
+      const voices = speechSynthesis.getVoices();
+      const de = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('de'));
+      if (de) u.voice = de;
+      // Avoid overlapping utterances
+      try{ speechSynthesis.cancel(); }catch{}
+      speechSynthesis.speak(u);
+    };
+    if (speechSynthesis.getVoices().length === 0) {
+      const once = () => { pickAndSpeak(); speechSynthesis.removeEventListener('voiceschanged', once); };
+      speechSynthesis.addEventListener('voiceschanged', once);
+      // also try once immediately to cover browsers that queue voices quickly
+      setTimeout(pickAndSpeak, 0);
+    } else {
+      pickAndSpeak();
+    }
+  }catch(e){
+    // Fail silently; UI must continue
+    console.warn('TTS error:', e);
+  }
+}
 
 // ---- Scenarios ----
 
@@ -351,15 +386,6 @@ document.getElementById('practiceBtn').addEventListener('click', startPractice);
 document.getElementById('startBtn').addEventListener('click', startTest);
 document.getElementById('restart').addEventListener('click', restartAll);
 
-// Speech
-function speak(text){
-  const u=new SpeechSynthesisUtterance(text);
-  const v=speechSynthesis.getVoices().find(v=>v.lang && v.lang.toLowerCase().startsWith('de'));
-  if(v) u.voice=v;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
-}
-
 // ---- Practice Logic ----
 function startPractice(){
   startCard.classList.add('hidden');
@@ -372,9 +398,28 @@ function startPractice(){
 function p_startTimer(){
   if(p_timer){clearInterval(p_timer);}  
   p_timeLeft = TIME_LIMIT; p_timeLeftEl.textContent = `${p_timeLeft}s`; p_timeBar.style.width='100%';
+  // reset warn state
+  p_timeBar.classList.remove('warn');
+  p_timeLeftEl.parentElement.classList.remove('warn');
+
   p_timer=setInterval(()=>{
     p_timeLeft--; p_timeLeftEl.textContent = `${p_timeLeft}s`; p_timeBar.style.width=`${(p_timeLeft/TIME_LIMIT)*100}%`;
-    if(p_timeLeft<=0){ clearInterval(p_timer); p_lockInputs(); p_next.disabled=false; }
+
+    // Warnfarbe ab 10s Restzeit
+    if(p_timeLeft <= 10 && p_timeLeft > 0){
+      p_timeBar.classList.add('warn');
+      p_timeLeftEl.parentElement.classList.add('warn');
+    }else{
+      p_timeBar.classList.remove('warn');
+      p_timeLeftEl.parentElement.classList.remove('warn');
+    }
+
+    if(p_timeLeft<=0){
+      clearInterval(p_timer);
+      p_timeBar.classList.remove('warn');
+      p_timeLeftEl.parentElement.classList.remove('warn');
+      p_lockInputs(); p_next.disabled=false;
+    }
   },1000);
 }
 function p_lockInputs(){
@@ -419,9 +464,12 @@ function renderPractice(){
       p_mcqChoices.appendChild(label);
     });
   }
-  // Auto-play and timer
-  p_playsUsed=1; p_playsLeftEl.textContent = MAX_PLAYS - p_playsUsed; speak(s.tts);
+  // Auto-play counts as first play
+  p_playsUsed=1; p_playsLeftEl.textContent = MAX_PLAYS - p_playsUsed;
+  // Start timer FIRST to avoid blocking if TTS fails
   p_startTimer();
+  // TTS non-blocking
+  setTimeout(()=>speak(s.tts), 0);
 }
 
 p_play.addEventListener('click',()=>{
@@ -460,9 +508,28 @@ function startTest(){
 function startTimer(){
   if(timer){clearInterval(timer);}  
   timeLeft = TIME_LIMIT; timeLeftEl.textContent = `${timeLeft}s`; timeBar.style.width='100%';
+  // reset warn state
+  timeBar.classList.remove('warn');
+  timeLeftEl.parentElement.classList.remove('warn');
+
   timer=setInterval(()=>{
     timeLeft--; timeLeftEl.textContent=`${timeLeft}s`; timeBar.style.width=`${(timeLeft/TIME_LIMIT)*100}%`;
-    if(timeLeft<=0){ clearInterval(timer); autoFailDueToTimeout(); }
+
+    // Warnfarbe ab 10s Restzeit
+    if(timeLeft <= 10 && timeLeft > 0){
+      timeBar.classList.add('warn');
+      timeLeftEl.parentElement.classList.add('warn');
+    }else{
+      timeBar.classList.remove('warn');
+      timeLeftEl.parentElement.classList.remove('warn');
+    }
+
+    if(timeLeft<=0){
+      clearInterval(timer);
+      timeBar.classList.remove('warn');
+      timeLeftEl.parentElement.classList.remove('warn');
+      autoFailDueToTimeout();
+    }
   },1000);
 }
 function stopTimer(){ if(timer){clearInterval(timer); timer=null;} }
@@ -513,9 +580,12 @@ function renderTest(){
     });
   }
 
-  // Auto-play TTS and timer
-  playsUsed=1; playsLeftEl.textContent = MAX_PLAYS - playsUsed; speak(s.tts);
+  // Auto-play counts as first play
+  playsUsed=1; playsLeftEl.textContent = MAX_PLAYS - playsUsed;
+  // Start timer FIRST
   startTimer();
+  // TTS non-blocking
+  setTimeout(()=>speak(s.tts), 0);
 }
 
 playBtn.addEventListener('click',()=>{
