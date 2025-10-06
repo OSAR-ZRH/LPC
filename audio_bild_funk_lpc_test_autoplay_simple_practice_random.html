@@ -338,7 +338,7 @@ const practiceScenarios=[
     tts:"Suche das Bild mit einem roten Kreis in der Mitte.",
     buildOptions:function(){ const o=[];
       o.push({correct:true, svg:()=>{const s=drawBase();addCircle(s,110,110,32,colors.red);return s;}});
-      o.push({correct:false, svg:()=>{const s=drawBase();addCircle(s,110,110,32,colors.blue);return s;}});
+      o.push({correct:false, svg:()=>{const s=drawBase();addCircle(s,80,80,32,colors.red);return s;}});
       o.push({correct:false, svg:()=>{const s=drawBase();addCircle(s,170,170,32,colors.red);return s;}});
       return shuffle(o);
     }},
