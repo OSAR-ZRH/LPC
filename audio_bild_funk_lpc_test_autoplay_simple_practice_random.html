@@ -130,7 +130,7 @@
     <div id="p_feedback" style="margin-top:12px"></div>
 
     <div class="center" style="margin-top:12px">
-      <button id="toTestBtn" class="primary hidden" type="button">Zum LPC-Test</button>
+      <button id="toTestBtn" class="primary hidden" type="button">LPC-Test starten</button>
     </div>
   </section>
 
@@ -338,16 +338,16 @@ const practiceScenarios=[
     tts:"Suche das Bild mit einem roten Kreis in der Mitte.",
     buildOptions:function(){ const o=[];
       o.push({correct:true, svg:()=>{const s=drawBase();addCircle(s,110,110,32,colors.red);return s;}});
-      o.push({correct:false, svg:()=>{const s=drawBase();addCircle(s,50,50,32,colors.red);return s;}});
+      o.push({correct:false, svg:()=>{const s=drawBase();addCircle(s,110,110,32,colors.blue);return s;}});
       o.push({correct:false, svg:()=>{const s=drawBase();addCircle(s,170,170,32,colors.red);return s;}});
       return shuffle(o);
     }},
   { kind:"mcq", prompt:"",
     tts:"Traktor Alfa siebzehn, bitte warten.",
     options:[
-      {text:"Traktor A17 wartet.", correct:true},
-      {text:"Traktor A17 fährt weiter.", correct:false},
-      {text:"Traktor A17 meldet Störung.", correct:false}
+      {text:"Traktor A17 muss warten.", correct:true},
+      {text:"Traktor A17 muss nicht warten.", correct:false},
+      {text:"Traktor A17 meldet eine Störung.", correct:false}
     ]}
 ];
 
