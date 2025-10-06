@@ -334,7 +334,7 @@ const testScenariosAll=[...imageBase,...imageHard,...mcqScenarios];
 
 // Übung: 2 (aus Original)
 const practiceScenarios=[
-  { kind:"image", prompt:"Ein roter Kreis in der Mitte.",
+  { kind:"image", prompt:"",
     tts:"Suche das Bild mit einem roten Kreis in der Mitte.",
     buildOptions:function(){ const o=[];
       o.push({correct:true, svg:()=>{const s=drawBase();addCircle(s,110,110,32,colors.red);return s;}});
