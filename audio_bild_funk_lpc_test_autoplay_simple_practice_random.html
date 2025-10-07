@@ -54,7 +54,7 @@
 </head>
 <body>
 <header>
-  <h1>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)  v1.0</h1>
+  <h1>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)  v1.1 - Draft</h1>
   <button id="openSettings" class="ghost" type="button">⚙️ Audio‑Einstellungen</button>
 </header>
 
@@ -196,11 +196,45 @@ const colors={ red:"#e74c3c", blue:"#3498db", green:"#2ecc71", yellow:"#f1c40f",
 // ---------- TTS / Stimmen ----------
 let cachedDeVoice=null;
 const LS_KEY="lpc_voice_pref_v1";
+
+// NEU: gewünschte Standardstimme definieren
+const DEFAULT_VOICE_NAME = "Microsoft Jonas Online (Natural) - German (Austria)";
+const DEFAULT_VOICE_LANG = "de-AT";
+
 function awaitVoices(timeout=1200){ return new Promise(res=>{ try{ const have=speechSynthesis?.getVoices?.()||[]; if(have.length) return res(have); let done=false; const on=()=>{ if(!done){done=true; speechSynthesis.removeEventListener('voiceschanged',on); res(speechSynthesis.getVoices()); } }; speechSynthesis?.addEventListener('voiceschanged',on); setTimeout(()=>{ if(!done){done=true; speechSynthesis?.removeEventListener('voiceschanged',on); res(speechSynthesis?.getVoices?.()||[]);} },timeout);}catch{res([])} });}
 function pickGerman(voices){ if(!voices.length) return null; const byName=s=>voices.find(v=>(v.name||"").toLowerCase().includes(s)); const byLang=c=>voices.find(v=>(v.lang||"").toLowerCase().startsWith(c)); const prefer=["natural (de","online (natural) (de","microsoft katja","microsoft conrad","microsoft amelie","microsoft hedy"]; for(const k of prefer){ const v=byName(k); if(v && (v.lang||"").toLowerCase().startsWith("de")) return v; } return byLang("de-de")||byLang("de-")||null; }
 function loadPref(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"null"); }catch{return null} }
 function savePref(p){ try{ localStorage.setItem(LS_KEY, JSON.stringify(p)); }catch{} }
-async function getDeVoice(){ if(cachedDeVoice) return cachedDeVoice; const saved=loadPref(); const vs=await awaitVoices(); if(saved?.name){ const m=vs.find(v=>v.name===saved.name); if(m){ cachedDeVoice=m; return m; } } cachedDeVoice=pickGerman(vs); return cachedDeVoice; }
+
+// ERSETZT: getDeVoice – mit harter Vorgabe Jonas de-AT
+async function getDeVoice(){
+  if(cachedDeVoice) return cachedDeVoice;
+
+  const saved = loadPref();
+  const vs = await awaitVoices();
+
+  // a) gespeicherte Auswahl zuerst
+  if (saved?.name){
+    const m = vs.find(v => v.name === saved.name);
+    if (m){ cachedDeVoice = m; return m; }
+  }
+
+  // b) harte Vorgabe: Microsoft Jonas (de-AT)
+  const jonas = vs.find(v =>
+    (v.name || "").includes(DEFAULT_VOICE_NAME) &&
+    (v.lang || "").toLowerCase() === DEFAULT_VOICE_LANG.toLowerCase()
+  );
+  if (jonas){
+    cachedDeVoice = jonas;
+    if (!saved) savePref({ name: jonas.name, rate: 1.0, pitch: 1.0 });
+    return jonas;
+  }
+
+  // c) Fallback: beste deutsche Stimme
+  cachedDeVoice = pickGerman(vs);
+  return cachedDeVoice;
+}
+
 async function speak(text){ if(!('speechSynthesis' in window) || !text) return; try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='de-DE'; const pref=loadPref(); const v=await getDeVoice(); if(v) u.voice=v; u.rate=pref?.rate??1.0; u.pitch=pref?.pitch??1.0; speechSynthesis.speak(u);}catch(e){ console.warn(e); } }
 function playPrompt(s){ if(s?.audioSrc){ const a=new Audio(s.audioSrc); a.play().catch(()=>speak(s.tts)); } else { speak(s.tts); } }
 
@@ -445,8 +479,18 @@ async function populateVoiceSelect(){
   voiceSelect.innerHTML="";
   if(!ordered.length){ const opt=document.createElement('option'); opt.textContent="Keine Stimmen verfügbar"; opt.value=""; voiceSelect.appendChild(opt); return; }
   ordered.forEach(v=>{ const opt=document.createElement('option'); opt.value=v.name; opt.textContent=`${v.name} — ${v.lang}`; voiceSelect.appendChild(opt); });
-  const saved=loadPref(); const picked = saved ? ordered.find(v=>v.name===saved.name) : null;
-  voiceSelect.value = picked ? picked.name : (de[0]?.name || ordered[0].name);
+  const saved=loadPref(); 
+  const pickedSaved = saved ? ordered.find(v=>v.name===saved.name) : null;
+
+  // NEU: wenn nichts gespeichert ist, bevorzugt Jonas de-AT
+  const pickedDefault = ordered.find(v =>
+    (v.name || "").includes(DEFAULT_VOICE_NAME) &&
+    (v.lang || "").toLowerCase() === DEFAULT_VOICE_LANG.toLowerCase()
+  );
+
+  voiceSelect.value = pickedSaved?.name
+    || pickedDefault?.name
+    || (de[0]?.name || ordered[0].name);
 }
 
 // ---------- Practice ----------
