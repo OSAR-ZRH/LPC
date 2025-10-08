@@ -695,7 +695,7 @@ function showSummary(){
 // Start/Restart
 document.getElementById('practiceBtn').addEventListener('click', startPractice);
 document.getElementById('startBtn').addEventListener('click', startTest);
-document.getElementById('restart').addEventListener('click', ()=>{ answers.length=0; started=false; index=0; score=0; startCard.classList.remove('hidden'); practiceCard.classList.add('hidden'); quizCard.classList.add('hidden'); summaryCard.classList.add('hidden'); });
+document.getElementById('restart').addEventListener('click', ()=>{ window.location.reload(); // Seite komplett neu laden
 
 // --------- Audio-Settings automatisch anzeigen ---------
 getDeVoice().catch(()=>{});
