@@ -695,7 +695,8 @@ function showSummary(){
 // Start/Restart
 document.getElementById('practiceBtn').addEventListener('click', startPractice);
 document.getElementById('startBtn').addEventListener('click', startTest);
-document.getElementById('restart').addEventListener('click', ()=>{ window.location.reload(); // Seite komplett neu laden
+document.getElementById('restart').addEventListener('click', ()=>{
+  window.location.reload(); // Seite komplett neu laden
 
 // --------- Audio-Settings automatisch anzeigen ---------
 getDeVoice().catch(()=>{});
