@@ -280,8 +280,19 @@ const imageBase=[
       return shuffle(o);
     }},
   { kind:"number", prompt:"",
-    tts:"Bitte trage in das leere Feld die Zahl siebenundvierzig ein",
-    expect:47 }
+    // CHANGED: randomized pool + pick()
+    pool:[
+      { num:37, tts:"Bitte trage in das leere Feld die Zahl siebenunddreißig ein" },
+      { num:47, tts:"Bitte trage in das leere Feld die Zahl siebenundvierzig ein" },
+      { num:59, tts:"Bitte trage in das leere Feld die Zahl neunundfünfzig ein" }
+    ],
+    pick:function(){
+      const c=this.pool[Math.floor(Math.random()*this.pool.length)];
+      this.expect=c.num; this.tts=c.tts; this.placeholder="";
+    },
+    expect:47, // fallback initial value (keine Änderung an restlichem Code nötig)
+    tts:"Bitte trage in das leere Feld die Zahl siebenundvierzig ein"
+  }
 ];
 
 // 2 Bild schwer
@@ -612,8 +623,11 @@ function renderTest(){
       mcqChoices.appendChild(label);
     });
   }else if(s.kind==="number"){
+    // NEW: pick one number variant once
+    if(typeof s.pick==='function' && !s._picked){ s.pick(); s._picked=true; }
     currentNumberExpected = Number(s.expect);
     presented = [{text: String(currentNumberExpected), correct:true}];
+    if(s.placeholder){ numberInput.placeholder = s.placeholder; } else { numberInput.placeholder = ""; }
     showNumberInput();
   }
 
