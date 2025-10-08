@@ -56,7 +56,7 @@
 </head>
 <body>
 <header>
-  <h1>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)  v1.6 - Draft</h1>
+  <h1>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)  v1.7 - Draft</h1>
   <button id="openSettings" class="ghost" type="button">⚙️ Audio-Einstellungen</button>
 </header>
 
@@ -158,7 +158,7 @@
     <div id="mcqChoices" class="mcq hidden" role="radiogroup" aria-label="Antwortmöglichkeiten"></div>
     <div id="numberWrap" class="number-wrap hidden">
       <label for="numberInput"><b>Zahl eingeben</b> (nur Ziffern)</label>
-      <input id="numberInput" inputmode="numeric" pattern="\d*" placeholder="" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <input id="numberInput" inputmode="numeric" pattern="[0-9]*" placeholder="" autocomplete="off" autocapitalize="off" spellcheck="false">
     </div>
 
     <div id="feedback" style="margin-top:12px"></div>
@@ -168,10 +168,18 @@
   <section class="card hidden" id="summaryCard">
     <h2>📊 Auswertung – LPC-Test</h2>
     <div id="summaryBox"></div>
-    <div class="list" id="detailList"></div>
+
+    <!-- Detailauflösung ist standardmäßig versteckt -->
     <div class="row" style="margin-top:12px">
-      <button id="restart" type="button">Nochmal starten</button>
+      <button id="revealBtn" type="button">🔒 Auflösung</button>
+      <div id="pwWrap" class="row hidden">
+        <input id="pwInput" type="password" placeholder="123456" autocomplete="off" style="padding:10px;border:1px solid #dbe7ff;border-radius:10px;background:#f8fbff">
+        <button id="pwSubmit" class="primary" type="button">OK</button>
+      </div>
+      <!-- Kein Restart-Button -->
     </div>
+
+    <div class="list hidden" id="detailList"></div>
   </section>
 </main>
 
@@ -188,6 +196,7 @@ function init(){
 try{
 // ---------- constants ----------
 const PASS_THRESHOLD=0.90, MAX_PLAYS=2, TIME_LIMIT=30;
+const SOLUTION_PASSWORD = "123456";
 
 // ---------- helpers ----------
 function shuffle(a){ const arr=a.slice(); for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; }
@@ -281,17 +290,13 @@ const imageBase=[
       return shuffle(o);
     }},
   { kind:"number", prompt:"",
-    // CHANGED: randomized pool + pick()
     pool:[
       { num:37, tts:"Bitte trage in das leere Feld die Zahl siebenunddreißig ein" },
       { num:47, tts:"Bitte trage in das leere Feld die Zahl siebenundvierzig ein" },
       { num:59, tts:"Bitte trage in das leere Feld die Zahl neunundfünfzig ein" }
     ],
-    pick:function(){
-      const c=this.pool[Math.floor(Math.random()*this.pool.length)];
-      this.expect=c.num; this.tts=c.tts; this.placeholder="";
-    },
-    expect:47, // fallback initial value (keine Änderung an restlichem Code nötig)
+    pick:function(){ const c=this.pool[Math.floor(Math.random()*this.pool.length)]; this.expect=c.num; this.tts=c.tts; this.placeholder=""; },
+    expect:47,
     tts:"Bitte trage in das leere Feld die Zahl siebenundvierzig ein"
   }
 ];
@@ -330,7 +335,7 @@ const mcqScenarios=[
     options:[
       {text:"Auf dem Standplatz gilt die generelle Pflicht zum Tragen von persönlicher Schutzausrüstung nur für externe Dienstleister.", correct:false},
       {text:"Es besteht die generelle Pflicht zum Tragen persönlicher Schutzausrüstung auf dem Standplatz.", correct:true},
-      {text:"Auf dem Standplatz entfällt die generelle Pflicht zum Tragen von persönlicher Schutzausrüstung, wenn keine Flugzeuge in der Nähe sind.", correct:false}
+      {text:"Auf dem Standplatz entfällt die generelle Pflicht zum Trragen von persönlicher Schutzausrüstung, wenn keine Flugzeuge in der Nähe sind.", correct:false}
     ]},
   { kind:"mcq", prompt:"Welche Aussage ist korrekt?",
     tts:"Gusti zwei, kannst du bitte zum Tower kommen?",
@@ -618,17 +623,17 @@ function renderTest(){
     shuffled.forEach((opt,i)=>{
       const id=`q${index}_${i}`;
       const label=document.createElement('label'); label.className='choice'; label.setAttribute('for', id);
-      label.innerHTML=`<input id="${id}" type="radio" name="mcq"> <div>${opt.text}</div>`;
+      const safeText = opt.text;
+      label.innerHTML=`<input id="${id}" type="radio" name="mcq"> <div>${safeText}</div>`;
       const input=label.querySelector('input');
       input.addEventListener('change', ()=>{ Array.from(mcqChoices.children).forEach(el=>el.classList.remove('selected')); label.classList.add('selected'); selected=i; });
       mcqChoices.appendChild(label);
     });
   }else if(s.kind==="number"){
-    // NEW: pick one number variant once
     if(typeof s.pick==='function' && !s._picked){ s.pick(); s._picked=true; }
     currentNumberExpected = Number(s.expect);
     presented = [{text: String(currentNumberExpected), correct:true}];
-    if(s.placeholder){ numberInput.placeholder = s.placeholder; } else { numberInput.placeholder = ""; }
+    numberInput.placeholder = s.placeholder ? s.placeholder : "";
     showNumberInput();
   }
 
@@ -670,11 +675,37 @@ function autoFailDueToTimeout(){
   lockInputs(); nextBtn.disabled=false; feedbackEl.innerHTML="";
 }
 nextBtn.addEventListener('click', ()=>{ stopTimer(); if(index<testScenarios.length-1){ index++; renderTest(); } else { showSummary(); } });
+
+// ---------- Zusammenfassung (ohne Details, passwortgeschützt) ----------
+const revealBtn = document.getElementById('revealBtn');
+const pwWrap    = document.getElementById('pwWrap');
+const pwInput   = document.getElementById('pwInput');
+const pwSubmit  = document.getElementById('pwSubmit');
+
 function showSummary(){
   quizCard.classList.add('hidden'); summaryCard.classList.remove('hidden');
-  const total=testScenarios.length; const pct=Math.round((answers.filter(a=>a.isCorrect).length/total)*100); const passed=(pct>=PASS_THRESHOLD*100);
-  const box=document.getElementById('summaryBox'); box.className= passed ? 'result-pass' : 'result-fail';
-  box.textContent = passed ? `Bestanden 🎉 – ${pct}% richtig (${answers.filter(a=>a.isCorrect).length}/${total}).` : `Nicht bestanden – ${pct}% richtig (${answers.filter(a=>a.isCorrect).length}/${total}). Mindestens ${Math.round(PASS_THRESHOLD*100)}% erforderlich.`;
+
+  // Gesamtergebnis
+  const total=testScenarios.length; 
+  const correctCount = answers.filter(a=>a.isCorrect).length;
+  const pct=Math.round((correctCount/total)*100); 
+  const passed=(pct>=PASS_THRESHOLD*100);
+  const box=document.getElementById('summaryBox'); 
+  box.className= passed ? 'result-pass' : 'result-fail';
+  box.textContent = passed 
+    ? `Bestanden 🎉 – ${pct}% richtig (${correctCount}/${total}).` 
+    : `Nicht bestanden – ${pct}% richtig (${correctCount}/${total}). Mindestens ${Math.round(PASS_THRESHOLD*100)}% erforderlich.`;
+
+  // Details verstecken & Button/Passwort zurücksetzen
+  detailList.classList.add('hidden');
+  detailList.innerHTML="";
+  pwWrap.classList.add('hidden');
+  pwInput.value="";
+  revealBtn.disabled=false;
+  revealBtn.textContent = '🔒 Auflösung';
+}
+
+function renderDetails(){
   detailList.innerHTML="";
   answers.forEach((a,i)=>{
     const div=document.createElement('div'); div.className='list-item';
@@ -691,12 +722,34 @@ function showSummary(){
     <span class="muted">Richtig: ${correctText}</span></div>`;
     detailList.appendChild(div);
   });
+  detailList.classList.remove('hidden');
 }
 
-// Start/Restart
+// Klick: Auflösung -> Passwortfeld anzeigen
+revealBtn.addEventListener('click', ()=>{
+  pwWrap.classList.remove('hidden');
+  pwInput.focus();
+});
+// Passwort prüfen
+pwSubmit.addEventListener('click', ()=>{
+  if(pwInput.value === SOLUTION_PASSWORD){
+    renderDetails();
+    pwWrap.classList.add('hidden');
+    revealBtn.disabled=true;
+    revealBtn.textContent='Auflösung angezeigt';
+  } else {
+    toast('Falsches Passwort.');
+    pwInput.value="";
+    pwInput.focus();
+  }
+});
+pwInput.addEventListener('keydown', (e)=>{
+  if(e.key==='Enter'){ e.preventDefault(); pwSubmit.click(); }
+});
+
+// Start
 document.getElementById('practiceBtn').addEventListener('click', startPractice);
 document.getElementById('startBtn').addEventListener('click', startTest);
-document.getElementById('restart').addEventListener('click', ()=>{ answers.length=0; started=false; index=0; score=0; startCard.classList.remove('hidden'); practiceCard.classList.add('hidden'); quizCard.classList.add('hidden'); summaryCard.classList.add('hidden'); });
 
 // --------- Audio-Settings automatisch anzeigen ---------
 getDeVoice().catch(()=>{});
