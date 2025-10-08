@@ -157,7 +157,7 @@
     <div id="mcqChoices" class="mcq hidden" role="radiogroup" aria-label="Antwortmöglichkeiten"></div>
     <div id="numberWrap" class="number-wrap hidden">
       <label for="numberInput"><b>Zahl eingeben</b> (nur Ziffern)</label>
-      <input id="numberInput" inputmode="numeric" pattern="\d*" placeholder="z. B. 37" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <input id="numberInput" inputmode="numeric" pattern="\d*" placeholder="" autocomplete="off" autocapitalize="off" spellcheck="false">
     </div>
 
     <div id="feedback" style="margin-top:12px"></div>
@@ -280,8 +280,8 @@ const imageBase=[
       return shuffle(o);
     }},
   { kind:"number", prompt:"",
-    tts:"Bitte trage die Zahl siebenunddreißig ein.",
-    expect:37 }
+    tts:"Bitte trage in das leere Feld die Zahl siebenundvierzig ein",
+    expect:47 }
 ];
 
 // 2 Bild schwer
