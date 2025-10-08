@@ -21,7 +21,7 @@
   button:hover:not(:disabled){transform:translateY(-1px)}
   .pill{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #d6e4ff;background:#f1f5ff;font-size:12px}
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .hidden{display:none}
+  .hidden{display:none !important}
   .rules{display:grid;gap:10px;margin:10px 0 0}
   .rules .item{display:flex;gap:10px;align-items:flex-start}
   .rules .badge{min-width:18px;width:18px;height:18px;border-radius:999px;background:#eaf2ff;border:1px solid #d6e4ff;display:grid;place-items:center;font-weight:700;color:#1f3b72;font-size:11px}
@@ -38,32 +38,34 @@
   .mcq{display:grid;gap:10px;margin-top:12px}
   .mcq .choice{display:flex;gap:10px;align-items:flex-start;border:2px solid #dbe7ff;background:#f8fbff;padding:10px 12px;border-radius:10px;cursor:pointer}
   .mcq .choice.selected{border-color:var(--acc); box-shadow:0 0 0 3px rgba(94,161,255,.28)}
+  .number-wrap{display:grid;gap:8px;margin-top:12px}
+  .number-wrap input{padding:10px;border:1px solid #dbe7ff;border-radius:10px;background:#f8fbff;font-size:18px;max-width:220px}
   .result-pass{border:1px solid #b7ead3;background:#ecfdf5;color:#065f46;padding:12px;border-radius:12px}
   .result-fail{border:1px solid #fecaca;background:#fef2f2;color:#7f1d1d;padding:12px;border-radius:12px}
   .list{margin-top:10px;border-top:1px dashed #e6eef8;padding-top:10px}
   .list-item{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed #e6eef8}
-  .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.28);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:50}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.28);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:9999}
   .modal{background:#fff;border:1px solid #e6eef8;border-radius:14px;box-shadow:var(--shadow);max-width:640px;width:94%;padding:16px}
   .grid{display:grid;gap:10px}
   .grid.cols2{grid-template-columns:1fr 1fr}
   .field{display:grid;gap:6px}
   select, input[type="range"]{padding:8px 10px;border:1px solid #dbe7ff;border-radius:10px;background:#f8fbff}
-  .help{font-size:12px;color:var(--muted)}
-  .toast{position:fixed;right:16px;bottom:16px;background:#111827;color:#fff;padding:10px 12px;border-radius:10px;box-shadow:var(--shadow);z-index:100;max-width:420px;font-size:13px;display:none}
+  .help{font-size:12px;color:#6b7280}
+  .toast{position:fixed;right:16px;bottom:16px;background:#111827;color:#fff;padding:10px 12px;border-radius:10px;box-shadow:var(--shadow);z-index:10000;max-width:420px;font-size:13px;display:none}
 </style>
 </head>
 <body>
 <header>
-  <h1>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)  v1.1 - Draft</h1>
-  <button id="openSettings" class="ghost" type="button">⚙️ Audio‑Einstellungen</button>
+  <h1>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)  v1.4 - Draft</h1>
+  <button id="openSettings" class="ghost" type="button">⚙️ Audio-Einstellungen</button>
 </header>
 
 <!-- Settings Modal -->
 <div id="settingsBackdrop" class="modal-backdrop" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
     <div class="row" style="justify-content:space-between">
-      <h3 id="settingsTitle">Audio-Einstellungen</h3>
-      <button id="closeSettings" class="ghost" type="button">✖</button>
+      <h3 id="settingsTitle">Prüfe die Audio-Einstellungen</h3>
+      <button id="closeSettings" class="ghost" type="button" aria-label="Schließen">✖</button>
     </div>
     <div class="grid">
       <div class="field">
@@ -96,7 +98,7 @@
     <h2>Willkommen zum LPC-Test 💬👂</h2>
     <p>Dieser Test prüft dein <b>deutsches Hörverständnis</b> mit kurzen Ansagen und Funksprüchen.</p>
     <div class="rules">
-      <div class="item"><div class="badge">1</div><div>Es gibt <b>15 Fragen</b> in <b>zufälliger Reihenfolge</b>: Bild-Aufgaben mit Ansage und Funk-Aufgaben mit Textantwort.</div></div>
+      <div class="item"><div class="badge">1</div><div>Es gibt <b>15 Fragen</b> in <b>zufälliger Reihenfolge</b>: Bild-Aufgaben mit Ansage, Funk-Aufgaben mit Textantwort und <b>Zahleneingabe</b>.</div></div>
       <div class="item"><div class="badge">2</div><div>Du hast pro Frage <b>30 Sekunden</b>. Die Zeitleiste zeigt die Zeit. Läuft sie ab, zählt die Frage als <b>falsch</b>.</div></div>
       <div class="item"><div class="badge">3</div><div>Die Ansage startet <b>automatisch</b> und kann pro Frage noch <b>einmal</b> wiederholt werden (insgesamt 2×).</div></div>
       <div class="item"><div class="badge">4</div><div>Du bestehst mit mindestens <b>90&nbsp;% bzw. 14 richtigen Antworten</b>.</div></div>
@@ -153,6 +155,10 @@
 
     <div id="imageChoices" class="choices grid3 hidden"></div>
     <div id="mcqChoices" class="mcq hidden" role="radiogroup" aria-label="Antwortmöglichkeiten"></div>
+    <div id="numberWrap" class="number-wrap hidden">
+      <label for="numberInput"><b>Zahl eingeben</b> (nur Ziffern)</label>
+      <input id="numberInput" inputmode="numeric" pattern="\d*" placeholder="z. B. 37" autocomplete="off" autocapitalize="off" spellcheck="false">
+    </div>
 
     <div id="feedback" style="margin-top:12px"></div>
   </section>
@@ -239,7 +245,7 @@ async function speak(text){ if(!('speechSynthesis' in window) || !text) return; 
 function playPrompt(s){ if(s?.audioSrc){ const a=new Audio(s.audioSrc); a.play().catch(()=>speak(s.tts)); } else { speak(s.tts); } }
 
 // ---------- Szenarien (voll) ----------
-// 5 Bild-Basis
+// 4 Bild-Basis + 1 Zahl
 const imageBase=[
   { kind:"image", prompt:"",
     tts:"Wähle das Bild mit einem roten Kreis oben links und einer blauen diagonalen Linie von unten links nach oben rechts.",
@@ -273,14 +279,9 @@ const imageBase=[
       o.push({correct:false, svg:()=>{const s=drawBase();addCircle(s,110,110,34,colors.violet);addLine(s,180,30,30,180,colors.yellow,10);addText(s,20,30,"B","#1f2937",26,"800");return s;}});
       return shuffle(o);
     }},
-  { kind:"image", prompt:"",
-    tts:"Wähle das Bild mit zwei grünen senkrechten Linien links, einem roten Dreieck oben und einem blauen Quadrat rechts unten.",
-    buildOptions:function(){ const tri=(cx,cy,w,h)=>`${cx-w/2},${cy} ${cx+w/2},${cy} ${cx},${cy-h}`; const o=[];
-      o.push({correct:true, svg:()=>{const s=drawBase();addLine(s,40,40,40,180,colors.green,10);addLine(s,70,40,70,180,colors.green,10);addTriangle(s,tri(110,80,80,60),colors.red);addRect(s,150,150,40,40,colors.blue);return s;}});
-      o.push({correct:false, svg:()=>{const s=drawBase();addLine(s,150,40,150,180,colors.green,10);addLine(s,180,40,180,180,colors.green,10);addTriangle(s,tri(110,80,80,60),colors.red);addRect(s,150,150,40,40,colors.blue);return s;}});
-      o.push({correct:false, svg:()=>{const s=drawBase();addLine(s,40,40,40,180,colors.green,10);addLine(s,70,40,70,180,colors.green,10);addTriangle(s,tri(110,80,80,60),colors.red);addRect(s,30,150,40,40,colors.blue);return s;}});
-      return shuffle(o);
-    }}
+  { kind:"number", prompt:"",
+    tts:"Bitte trage die Zahl siebenunddreißig ein.",
+    expect:37 }
 ];
 
 // 2 Bild schwer
@@ -303,7 +304,7 @@ const imageHard=[
     }}
 ];
 
-// 8 MCQ (3 aktualisierte + 5 neue)
+// 8 MCQ
 const mcqScenarios=[
   { kind:"mcq", prompt:"Welche Aussage ist korrekt?",
     tts:"Orion eins, bitte vor Rollweg November warten.",
@@ -363,10 +364,10 @@ const mcqScenarios=[
     ]}
 ];
 
-// Finaler Test: 5 + 2 + 8 = 15
+// Finaler Test: 4 Bilder + 1 Zahl + 2 Bild schwer + 8 MCQ = 15
 const testScenariosAll=[...imageBase,...imageHard,...mcqScenarios];
 
-// Übung: 2 (aus Original)
+// Übung
 const practiceScenarios=[
   { kind:"image", prompt:"",
     tts:"Suche das Bild mit einem roten Kreis in der Mitte.",
@@ -389,6 +390,7 @@ const practiceScenarios=[
 let started=false,index=0,score=0,playsUsed=0,selected=-1,timer=null,timeLeft=TIME_LIMIT;
 let presented=null; const answers=[]; let testScenarios=[];
 let p_index=0,p_selected=-1,p_timer=null,p_timeLeft=TIME_LIMIT,p_playsUsed=0,p_presented=null;
+let currentNumberExpected=null;
 
 // ---------- get DOM ----------
 const startCard=document.getElementById('startCard');
@@ -422,6 +424,8 @@ const promptEl=document.getElementById('prompt');
 const feedbackEl=document.getElementById('feedback');
 const imageChoices=document.getElementById('imageChoices');
 const mcqChoices=document.getElementById('mcqChoices');
+const numberWrap=document.getElementById('numberWrap');
+const numberInput=document.getElementById('numberInput');
 const detailList=document.getElementById('detailList');
 const totalEl=document.getElementById('total');
 
@@ -437,8 +441,8 @@ const pitchVal=document.getElementById('pitchVal');
 const testVoiceBtn=document.getElementById('testVoice');
 const saveVoiceBtn=document.getElementById('saveVoice');
 
-function openModal(){ settingsBackdrop.style.display='flex'; }
-function closeModal(){ settingsBackdrop.style.display='none'; }
+function openModal(){ settingsBackdrop.style.display='flex'; settingsBackdrop.setAttribute('aria-hidden','false'); }
+function closeModal(){ settingsBackdrop.style.display='none'; settingsBackdrop.setAttribute('aria-hidden','true'); }
 
 openSettingsBtn.addEventListener('click', ()=>{
   openModal();
@@ -449,6 +453,8 @@ openSettingsBtn.addEventListener('click', ()=>{
   pitchVal.textContent=(pref.pitch??1.0).toFixed(2);
 });
 closeSettingsBtn.addEventListener('click', closeModal);
+settingsBackdrop.addEventListener('click', (e)=>{ if(e.target===settingsBackdrop) closeModal(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
 
 rate.addEventListener('input', e=> rateVal.textContent=parseFloat(e.target.value).toFixed(2));
 pitch.addEventListener('input', e=> pitchVal.textContent=parseFloat(e.target.value).toFixed(2));
@@ -482,10 +488,9 @@ async function populateVoiceSelect(){
   const saved=loadPref(); 
   const pickedSaved = saved ? ordered.find(v=>v.name===saved.name) : null;
 
-  // NEU: wenn nichts gespeichert ist, bevorzugt Jonas de-AT
   const pickedDefault = ordered.find(v =>
-    (v.name || "").includes(DEFAULT_VOICE_NAME) &&
-    (v.lang || "").toLowerCase() === DEFAULT_VOICE_LANG.toLowerCase()
+    (v.name || "").includes("Microsoft Jonas Online (Natural) - German (Austria)") &&
+    (v.lang || "").toLowerCase() === "de-at"
   );
 
   voiceSelect.value = pickedSaved?.name
@@ -555,6 +560,7 @@ function startTest(){
   startCard.classList.add('hidden'); practiceCard.classList.add('hidden'); summaryCard.classList.add('hidden'); quizCard.classList.remove('hidden');
   totalEl.textContent=testScenarios.length; renderTest();
 }
+
 function startTimer(){
   if(timer) clearInterval(timer);
   timeLeft=TIME_LIMIT; timeLeftEl.textContent=`${timeLeft}s`; timeBar.style.width='100%'; timeBar.classList.remove('warn');
@@ -565,13 +571,22 @@ function startTimer(){
   },1000);
 }
 function stopTimer(){ if(timer){ clearInterval(timer); timer=null; } }
-function lockInputs(){ playBtn.disabled=true; submitBtn.disabled=true; Array.from(document.querySelectorAll('.opt, .mcq .choice')).forEach(el=>el.style.pointerEvents='none'); }
+
+function hideNumberInput(){ numberWrap.classList.add('hidden'); numberWrap.style.display='none'; if(numberInput){ numberInput.value=""; numberInput.disabled=false; } }
+function showNumberInput(){ numberWrap.classList.remove('hidden'); numberWrap.style.display='grid'; setTimeout(()=>numberInput?.focus?.(),50); }
+
+function lockInputs(){ 
+  playBtn.disabled=true; submitBtn.disabled=true; 
+  Array.from(document.querySelectorAll('.opt, .mcq .choice')).forEach(el=>el.style.pointerEvents='none'); 
+  if(numberInput){ numberInput.disabled=true; }
+}
 
 function renderTest(){
   const s=testScenarios[index];
   idxEl.textContent=index+1; promptEl.textContent=s.prompt||""; feedbackEl.innerHTML=""; selected=-1; nextBtn.disabled=true;
-  imageChoices.classList.add('hidden'); mcqChoices.classList.add('hidden'); imageChoices.innerHTML=""; mcqChoices.innerHTML="";
-  submitBtn.disabled=false; playBtn.disabled=false; presented=null;
+  imageChoices.classList.add('hidden'); mcqChoices.classList.add('hidden'); hideNumberInput();
+  imageChoices.innerHTML=""; mcqChoices.innerHTML="";
+  submitBtn.disabled=false; playBtn.disabled=false; presented=null; currentNumberExpected=null;
 
   if(s.kind==="image"){
     const opts=s.buildOptions(); presented=opts.map((o,i)=>({text:`Bild ${i+1}`, correct:o.correct}));
@@ -585,7 +600,7 @@ function renderTest(){
       card.addEventListener('click', choose); card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); choose(); } });
       imageChoices.appendChild(card);
     });
-  }else{
+  }else if(s.kind==="mcq"){
     mcqChoices.classList.remove('hidden');
     const shuffled = shuffle(s.options.map(o=>({text:o.text, correct:o.correct}))); presented=shuffled;
     shuffled.forEach((opt,i)=>{
@@ -596,22 +611,47 @@ function renderTest(){
       input.addEventListener('change', ()=>{ Array.from(mcqChoices.children).forEach(el=>el.classList.remove('selected')); label.classList.add('selected'); selected=i; });
       mcqChoices.appendChild(label);
     });
+  }else if(s.kind==="number"){
+    currentNumberExpected = Number(s.expect);
+    presented = [{text: String(currentNumberExpected), correct:true}];
+    showNumberInput();
   }
 
   playsUsed=1; playsLeftEl.textContent=MAX_PLAYS-playsUsed;
   startTimer(); setTimeout(()=>playPrompt(s), 0);
 }
 playBtn.addEventListener('click', ()=>{ if(playsUsed>=MAX_PLAYS) return; playsUsed++; playsLeftEl.textContent=Math.max(0,MAX_PLAYS-playsUsed); if(playsUsed>=MAX_PLAYS) playBtn.disabled=true; playPrompt(testScenarios[index]); });
+
 submitBtn.addEventListener('click', ()=>{
+  const s=testScenarios[index];
+  if(s.kind==="number"){
+    const entered = (numberInput?.value||"").trim();
+    if(!entered){ feedbackEl.innerHTML='<div class="result-fail">Bitte eine Zahl eingeben.</div>'; return; }
+    if(!/^\d+$/.test(entered)){ feedbackEl.innerHTML='<div class="result-fail">Nur Ziffern (0–9) erlaubt.</div>'; return; }
+    const isCorrect = Number(entered) === currentNumberExpected;
+    const correctIndex = 0;
+    if(!answers.some(a=>a.idx===index)){
+      if(isCorrect) score++;
+      answers.push({idx:index,isCorrect,selected:isCorrect?0:-1,correctIndex,presented:presented.slice(),kind:'number',prompt:s.prompt,entered});
+    }
+    stopTimer(); lockInputs(); nextBtn.disabled=false; feedbackEl.innerHTML="";
+    return;
+  }
+
   if(selected<0){ feedbackEl.innerHTML=`<div class="result-fail">Bitte eine Option auswählen.</div>`; return; }
   const correctIndex=presented.findIndex(o=>o.correct===true);
   const isCorrect=(selected===correctIndex);
   if(!answers.some(a=>a.idx===index)){ if(isCorrect) score++; answers.push({idx:index,isCorrect,selected,correctIndex,presented:presented.slice(),kind:testScenarios[index].kind,prompt:testScenarios[index].prompt}); }
   stopTimer(); lockInputs(); nextBtn.disabled=false; feedbackEl.innerHTML="";
 });
+
+numberInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); submitBtn.click(); }});
+
 function autoFailDueToTimeout(){
-  const correctIndex=presented.findIndex(o=>o.correct===true);
-  if(!answers.some(a=>a.idx===index)){ answers.push({idx:index,isCorrect:false,selected:-1,correctIndex,presented:presented.slice(),kind:testScenarios[index].kind,prompt:testScenarios[index].prompt}); }
+  const s=testScenarios[index];
+  let ci = 0;
+  if(s.kind!=="number" && presented){ ci = presented.findIndex(o=>o.correct===true); }
+  if(!answers.some(a=>a.idx===index)){ answers.push({idx:index,isCorrect:false,selected:-1,correctIndex:ci,presented:presented?presented.slice():[{text:String(s.expect||"")}],kind:s.kind,prompt:s.prompt}); }
   lockInputs(); nextBtn.disabled=false; feedbackEl.innerHTML="";
 }
 nextBtn.addEventListener('click', ()=>{ stopTimer(); if(index<testScenarios.length-1){ index++; renderTest(); } else { showSummary(); } });
@@ -623,11 +663,16 @@ function showSummary(){
   detailList.innerHTML="";
   answers.forEach((a,i)=>{
     const div=document.createElement('div'); div.className='list-item';
-    const tag=a.isCorrect?'✅':'❌'; const type=a.kind==="image"?"Bild":"Funk";
-    const yourText = (a.selected===-1) ? "— (keine Antwort)" : (a.presented[a.selected]?.text || "");
-    const correctText = a.presented[a.correctIndex]?.text || "";
-    div.innerHTML=`<div><b>${tag} Frage ${i+1} (${type})</b> – ${a.prompt}<br>
-    <span class="muted">Deine Auswahl: ${yourText}</span><br>
+    const tag=a.isCorrect?'✅':'❌'; 
+    const type = a.kind==="image" ? "Bild" : (a.kind==="mcq" ? "Funk" : "Zahl");
+    const yourText = (a.kind==="number") 
+      ? (a.entered ?? "— (keine Eingabe)")
+      : ((a.selected===-1) ? "— (keine Antwort)" : (a.presented[a.selected]?.text || ""));
+    const correctText = (a.kind==="number")
+      ? (a.presented[0]?.text || "")
+      : (a.presented[a.correctIndex]?.text || "");
+    div.innerHTML=`<div><b>${tag} Frage ${i+1} (${type})</b> – ${a.prompt||""}<br>
+    <span class="muted">Deine Eingabe/Auswahl: ${yourText}</span><br>
     <span class="muted">Richtig: ${correctText}</span></div>`;
     detailList.appendChild(div);
   });
@@ -638,9 +683,16 @@ document.getElementById('practiceBtn').addEventListener('click', startPractice);
 document.getElementById('startBtn').addEventListener('click', startTest);
 document.getElementById('restart').addEventListener('click', ()=>{ answers.length=0; started=false; index=0; score=0; startCard.classList.remove('hidden'); practiceCard.classList.add('hidden'); quizCard.classList.add('hidden'); summaryCard.classList.add('hidden'); });
 
-// Warm-up Stimmen
+// --------- Audio-Settings automatisch anzeigen ---------
 getDeVoice().catch(()=>{});
-toast('Bereit. Öffne ggf. ⚙️ Audio‑Einstellungen und starte.');
+populateVoiceSelect().catch(()=>{});
+const prefInit = loadPref() || {rate:1.0,pitch:1.0};
+rate.value=prefInit.rate??1.0; 
+pitch.value=prefInit.pitch??1.0;
+rateVal.textContent=(prefInit.rate??1.0).toFixed(2);
+pitchVal.textContent=(prefInit.pitch??1.0).toFixed(2);
+requestAnimationFrame(()=>{ setTimeout(()=>{ openModal(); toast('Audio-Einstellungen geöffnet. Stimme wählen und dann starten.'); }, 0); });
+
 } catch(e){ console.error(e); toast('Fehler beim Initialisieren: '+e.message); }
 }
 </script>
