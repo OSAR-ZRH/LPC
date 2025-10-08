@@ -56,7 +56,7 @@
 </head>
 <body>
 <header>
-  <h1>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)  v1.5 - Draft</h1>
+  <h1>Audio–Bild & Funk – LPC-Test (Deutsch Hörverstehen)  v1.6 - Draft</h1>
   <button id="openSettings" class="ghost" type="button">⚙️ Audio-Einstellungen</button>
 </header>
 
@@ -288,7 +288,7 @@ const imageBase=[
     ],
     pick:function(){
       const c=this.pool[Math.floor(Math.random()*this.pool.length)];
-      this.expect=c.num; this.tts=c.tts; this.placeholder="";
+      this.expect=c.num; this.tts=c.tts; this.placeholder="z. B. "+c.num;
     },
     expect:47, // fallback initial value (keine Änderung an restlichem Code nötig)
     tts:"Bitte trage in das leere Feld die Zahl siebenundvierzig ein"
@@ -695,8 +695,7 @@ function showSummary(){
 // Start/Restart
 document.getElementById('practiceBtn').addEventListener('click', startPractice);
 document.getElementById('startBtn').addEventListener('click', startTest);
-document.getElementById('restart').addEventListener('click', ()=>{
-  window.location.reload(); // Seite komplett neu laden
+document.getElementById('restart').addEventListener('click', ()=>{ answers.length=0; started=false; index=0; score=0; startCard.classList.remove('hidden'); practiceCard.classList.add('hidden'); quizCard.classList.add('hidden'); summaryCard.classList.add('hidden'); });
 
 // --------- Audio-Settings automatisch anzeigen ---------
 getDeVoice().catch(()=>{});
